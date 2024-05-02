@@ -8,6 +8,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void cleanUp();
 
 
 int main(void)
@@ -38,9 +39,7 @@ int main(void)
     if (!window)
     {
         VAMP_ERROR("[GLFW] GLFW failed to create a window...");
-        glfwTerminate();
-        VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
-        VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
+        cleanUp();
         return -1;
     }
 
@@ -52,9 +51,7 @@ int main(void)
     if ( !gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) )
     {
         VAMP_ERROR("[GLAD] GLAD failed to be initialized...");
-        glfwTerminate();
-        VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
-        VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
+        cleanUp();
         return -1;
     }
 
@@ -80,9 +77,7 @@ int main(void)
         glfwPollEvents();
     }
 
-    glfwTerminate();
-    VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
-    VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
+    cleanUp();
     return 0;
 }
 
@@ -94,6 +89,19 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+}
+
+
+
+
+
+void cleanUp()
+{
+    VAMP_INFO("[LearnOpenGL] Cleaning Up...");
+    glfwTerminate();
+    VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
+    VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
+    VAMP_INFO("[LearnOpenGL] Good Bye :)");
 }
 
 
