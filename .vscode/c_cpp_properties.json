@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/submodules/glfw/include",
-                "${workspaceFolder}/projects/GLAD/src/include"
+                "${workspaceFolder}/projects/GLAD/src/include",
+                "${workspaceFolder}/projects/VampLogger/src/include"
             ],
             "defines": [],
             "compilerPath": "/bin/clang",

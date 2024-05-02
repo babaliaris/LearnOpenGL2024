@@ -1,6 +1,5 @@
-project "LearnOpenGL"
-    targetname "learnOpenGL"
-    kind "ConsoleApp"
+project "VampLogger"
+    kind "StaticLib"
     language "C++"
     targetdir "%{_WORKING_DIR}/builds/%{cfg.shortname}/"
     objdir "%{_WORKING_DIR}/obj/%{prj.name}_%{cfg.shortname}/"
@@ -11,20 +10,6 @@ project "LearnOpenGL"
         "src/**.h",
         "src/**.hpp"
     }
-
-    includedirs {
-        "%{_WORKING_DIR}/submodules/glfw/include",
-        "%{_WORKING_DIR}/projects/GLAD/src/include",
-        "%{_WORKING_DIR}/projects/VampLogger/src/include",
-    }
-
-    -- All configurations for LINUX.
-    filter "system:linux"
-        links {"GL", "X11", "pthread",
-            "Xrandr", "Xi", "ldl", "GLFW",
-            "GLAD", "VampLogger"
-        }
-
 
     --All Platforms.
     filter{}

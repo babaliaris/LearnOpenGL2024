@@ -5,6 +5,7 @@ workspace "LearnOpenGL"
 
 -- ||||||||||||||||||||Include Projects|||||||||||||||||||| --
 include "projects/LearnOpenGL"
+include "projects/VampLogger"
 
 group "external"
     include "submodules/glfw"

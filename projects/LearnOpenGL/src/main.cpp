@@ -1,5 +1,8 @@
+#define VAMP_LOGGER_INIT
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vamplogger/logger.h>
 #include <iostream>
 
 
@@ -9,12 +12,18 @@ void processInput(GLFWwindow *window);
 
 int main(void)
 {
+    VAMP_GLOBAL_ENGINE_LOGGER = VampNewLogger("Engine");
+    VAMP_GLOBAL_CLIENT_LOGGER = VampNewLogger("Client");
+
     GLFWwindow* window;
 
     /* Initialize the library */
+    VAMP_INFO("[GLFW] Initializing GLFW...");
     if (!glfwInit())
     {
-        printf("GLFW failed to be initialized...\n");
+        VAMP_ERROR("[GLFW] GLFW failed to be initialized...");
+        VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
+        VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
         return -1;
     }
 
@@ -24,11 +33,14 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
+    VAMP_INFO("[GLFW] Creating the window...");
     window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
     if (!window)
     {
-        printf("GLFW failed to create a window...\n");
+        VAMP_ERROR("[GLFW] GLFW failed to create a window...");
         glfwTerminate();
+        VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
+        VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
         return -1;
     }
 
@@ -36,10 +48,13 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     //Initialize Glad.
+    VAMP_INFO("[GLAD] Initializing GLAD...");
     if ( !gladLoadGLLoader((GLADloadproc) glfwGetProcAddress) )
     {
-        printf("GLAD failed to be initialized...\n");
+        VAMP_ERROR("[GLAD] GLAD failed to be initialized...");
         glfwTerminate();
+        VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
+        VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
         return -1;
     }
 
@@ -66,6 +81,8 @@ int main(void)
     }
 
     glfwTerminate();
+    VampDestroyLogger(VAMP_GLOBAL_ENGINE_LOGGER);
+    VampDestroyLogger(VAMP_GLOBAL_CLIENT_LOGGER);
     return 0;
 }
 
@@ -86,4 +103,18 @@ void processInput(GLFWwindow *window)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-} 
+}
+
+
+
+
+
+VampLogger *VampGlobalGetEngineLogger()
+{
+    return VAMP_GLOBAL_ENGINE_LOGGER;
+}
+
+VampLogger *VampGlobalGetClientLogger()
+{
+    return VAMP_GLOBAL_CLIENT_LOGGER;
+}
