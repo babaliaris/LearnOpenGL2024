@@ -143,3 +143,23 @@ void LearnOpenGL::Shader::Unbind()
 {
     glCALL(glUseProgram(0));
 }
+
+
+void LearnOpenGL::Shader::SetUniform(const char *name, int value)
+{
+    this->Bind();
+
+    glCALL(int location = glGetUniformLocation(m_id, name));
+
+    if (location == -1)
+    {
+        VAMP_WARN("[Uniform]: %s, was not found.", name);
+    }
+
+    else
+    {
+        glCALL(glUniform1i(location, value));
+    }
+
+    this->Unbind();
+}

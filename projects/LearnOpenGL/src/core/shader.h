@@ -12,6 +12,8 @@ namespace LearnOpenGL
         void Bind();
         void Unbind();
 
+        void SetUniform(const char *name, int value);
+
         private:
         unsigned int m_id;
         std::string m_vertex_path, m_fragment_path;

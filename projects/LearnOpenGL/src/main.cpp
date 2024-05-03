@@ -5,6 +5,7 @@
 #include <vamplogger/logger.h>
 #include "debug/glcall.h"
 #include "core/shader.h"
+#include "core/texture.h"
 #include <iostream>
 #include <sstream>
 
@@ -72,9 +73,9 @@ int main(void)
 
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,
+        0.5f, -0.5f, 0.0f,   1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,   0.5f, 1.0f,
     };
 
     unsigned int vao, vbo;
@@ -86,18 +87,23 @@ int main(void)
     glCALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-    glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void *)0));
+    glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (const void *)0));
     glCALL(glEnableVertexAttribArray(0));
+
+    glCALL(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (const void *) (sizeof(float) * 3) ));
+    glCALL(glEnableVertexAttribArray(1));
 
     glCALL(glBindVertexArray(0));
     glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     std::stringstream vertexPath, fragmentPath;
-    vertexPath << "projects/LearnOpenGL/src/shaders/basic_vertex.glsl";
-    fragmentPath << "projects/LearnOpenGL/src/shaders/basic_fragment.glsl";
+    vertexPath << "projects/LearnOpenGL/src/shaders/texture_vertex.glsl";
+    fragmentPath << "projects/LearnOpenGL/src/shaders/texture_fragment.glsl";
 
     LearnOpenGL::Shader *shader = new LearnOpenGL::Shader(vertexPath.str().c_str(), fragmentPath.str().c_str());
+    shader->SetUniform("m_texture", 0);
 
+    LearnOpenGL::Texture *texture = new LearnOpenGL::Texture("projects/LearnOpenGL/resources/wall.jpg");
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -110,9 +116,11 @@ int main(void)
         //Render
         glCALL(glBindVertexArray(vao));
         shader->Bind();
+        texture->Bind();
         glCALL(glDrawArrays(GL_TRIANGLES, 0, 3));
         glCALL(glBindVertexArray(0));
         shader->Unbind();
+        texture->UnBind();
         
 
         /* Swap front and back buffers */
@@ -123,6 +131,7 @@ int main(void)
     }
 
     delete shader;
+    delete texture;
 
     cleanUp();
     return 0;
