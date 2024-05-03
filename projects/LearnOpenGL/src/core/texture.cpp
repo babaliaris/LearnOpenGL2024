@@ -10,7 +10,10 @@ GLenum GetTextureFormat(int channels)
     switch (channels)
     {
         case 1:
-            return GL_R8;
+        {
+            VAMP_WARN("[Shader] 1 channel images are not supported.");
+            return GL_RGB;
+        }
 
         case 2:
             return GL_RG;
@@ -22,7 +25,10 @@ GLenum GetTextureFormat(int channels)
             return GL_RGBA;
         
         default:
+        {
+            VAMP_WARN("[Shader] Uknown #channels: %d", channels);
             return GL_RGBA;
+        }
     }
 }
 
