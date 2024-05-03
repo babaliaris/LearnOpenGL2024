@@ -3,12 +3,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vamplogger/logger.h>
+#include "debug/glcall.h"
+#include "core/shader.h"
 #include <iostream>
+#include <sstream>
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void cleanUp();
+
+
+
+
+
 
 
 int main(void)
@@ -55,20 +63,57 @@ int main(void)
         return -1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glCALL(glViewport(0, 0, 800, 600));
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glCALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f, 0.5f, 0.0f
+    };
+
+    unsigned int vao, vbo;
+
+    glCALL(glGenVertexArrays(1, &vao));
+    glCALL(glBindVertexArray(vao));
+
+    glCALL(glGenBuffers(1, &vbo));
+    glCALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+
+    glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void *)0));
+    glCALL(glEnableVertexAttribArray(0));
+
+    glCALL(glBindVertexArray(0));
+    glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+    std::stringstream vertexPath, fragmentPath;
+    vertexPath << "projects/LearnOpenGL/src/shaders/basic_vertex.glsl";
+    fragmentPath << "projects/LearnOpenGL/src/shaders/basic_fragment.glsl";
+
+    LearnOpenGL::Shader *shader = new LearnOpenGL::Shader(vertexPath.str().c_str(), fragmentPath.str().c_str());
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        glCALL(glClear(GL_COLOR_BUFFER_BIT));
 
         processInput(window);
+
+        //Render
+        glCALL(glBindVertexArray(vao));
+        shader->Bind();
+        glCALL(glDrawArrays(GL_TRIANGLES, 0, 3));
+        glCALL(glBindVertexArray(0));
+        shader->Unbind();
+        
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -76,6 +121,8 @@ int main(void)
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    delete shader;
 
     cleanUp();
     return 0;
@@ -110,7 +157,7 @@ void cleanUp()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    glCALL(glViewport(0, 0, width, height));
 }
 
 

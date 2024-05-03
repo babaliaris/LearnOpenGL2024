@@ -32,7 +32,7 @@ project "LearnOpenGL"
     filter "configurations:debug"
         runtime "Debug"
         symbols "on"
-        defines "VAMP_DEBUG"
+        defines {"VAMP_DEBUG", "LEARN_OPENGL_DEBUG"}
 
     filter "configurations:dist"
         runtime "Release"
