@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <glm/glm.hpp>
 
 namespace LearnOpenGL
 {
@@ -13,6 +14,7 @@ namespace LearnOpenGL
         void Unbind();
 
         void SetUniform(const char *name, int value);
+        void SetUniform(const char *name, const glm::mat4 &mat);
 
         private:
         unsigned int m_id;

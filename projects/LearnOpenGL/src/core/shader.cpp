@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <glm/gtc/type_ptr.hpp>
 #include "../debug/glcall.h"
 
 
@@ -159,6 +160,26 @@ void LearnOpenGL::Shader::SetUniform(const char *name, int value)
     else
     {
         glCALL(glUniform1i(location, value));
+    }
+
+    this->Unbind();
+}
+
+
+void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat4 &mat)
+{
+    this->Bind();
+
+    glCALL(int location = glGetUniformLocation(m_id, name));
+
+    if (location == -1)
+    {
+        VAMP_WARN("[Uniform]: %s, was not found.", name);
+    }
+
+    else
+    {
+        glCALL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat)));
     }
 
     this->Unbind();

@@ -21,7 +21,8 @@ void cleanUp();
 
 
 
-
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
 
 
 int main(void)
@@ -48,7 +49,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
     VAMP_INFO("[GLFW] Creating the window...");
-    window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (!window)
     {
         VAMP_ERROR("[GLFW] GLFW failed to create a window...");
@@ -68,7 +69,7 @@ int main(void)
         return -1;
     }
 
-    glCALL(glViewport(0, 0, 800, 600));
+    glCALL(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 
     glCALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
@@ -101,7 +102,7 @@ int main(void)
     glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     std::stringstream vertexPath, fragmentPath;
-    vertexPath << "projects/LearnOpenGL/src/shaders/texture_vertex.glsl";
+    vertexPath << "projects/LearnOpenGL/src/shaders/mvp_vertex.glsl";
     fragmentPath << "projects/LearnOpenGL/src/shaders/texture_fragment.glsl";
 
     LearnOpenGL::Shader *shader = new LearnOpenGL::Shader(vertexPath.str().c_str(), fragmentPath.str().c_str());
@@ -110,12 +111,20 @@ int main(void)
     LearnOpenGL::Texture *texture = new LearnOpenGL::Texture("projects/LearnOpenGL/resources/wall.jpg");
 
 
-    glm::vec4 vec = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 mat = glm::mat4(1.0f);
-    mat = glm::translate(mat, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = mat * vec;
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view  = glm::mat4(1.0f);
+    glm::mat4 proj  = glm::mat4(1.0f);
 
-    VAMP_CLIENT_INFO("(%f, %f, %f)", vec.x, vec.y, vec.z);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
+
+    proj = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 100.0f);
+
+    shader->SetUniform("model", model);
+    shader->SetUniform("view", view);
+    shader->SetUniform("proj", proj);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
