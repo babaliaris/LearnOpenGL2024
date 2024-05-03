@@ -14,6 +14,7 @@ project "LearnOpenGL"
 
     includedirs {
         "%{_WORKING_DIR}/submodules/glfw/include",
+        "%{_WORKING_DIR}/submodules/glm",
         "%{_WORKING_DIR}/projects/GLAD/src/include",
         "%{_WORKING_DIR}/projects/VampLogger/src/include",
     }

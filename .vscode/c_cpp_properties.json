@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/submodules/glfw/include",
+                "${workspaceFolder}/submodules/glm",
                 "${workspaceFolder}/projects/GLAD/src/include",
                 "${workspaceFolder}/projects/VampLogger/src/include"
             ],

@@ -9,6 +9,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -104,6 +108,14 @@ int main(void)
     shader->SetUniform("m_texture", 0);
 
     LearnOpenGL::Texture *texture = new LearnOpenGL::Texture("projects/LearnOpenGL/resources/wall.jpg");
+
+
+    glm::vec4 vec = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 mat = glm::mat4(1.0f);
+    mat = glm::translate(mat, glm::vec3(1.0f, 1.0f, 0.0f));
+    vec = mat * vec;
+
+    VAMP_CLIENT_INFO("(%f, %f, %f)", vec.x, vec.y, vec.z);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
