@@ -19,6 +19,8 @@ namespace LearnOpenGL
         VAMP_GLOBAL_CLIENT_LOGGER = VampNewLogger("Client");
 
         m_window = new Window(title, width, height);
+
+        glCALL(glEnable(GL_DEPTH_TEST));
     }
 
 
@@ -44,7 +46,7 @@ namespace LearnOpenGL
         while (!glfwWindowShouldClose(m_window->m_window))
         {
             /* Render here */
-            glCALL(glClear(GL_COLOR_BUFFER_BIT));
+            glCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
             this->processInput();
 
