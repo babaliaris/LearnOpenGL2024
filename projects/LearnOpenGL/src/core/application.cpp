@@ -14,6 +14,7 @@
 namespace LearnOpenGL
 {
     Application::Application(const std::string &title, int width, int height)
+        : m_deltaTime(0.0f)
     {
         VAMP_GLOBAL_ENGINE_LOGGER = VampNewLogger("Engine");
         VAMP_GLOBAL_CLIENT_LOGGER = VampNewLogger("Client");
@@ -42,9 +43,16 @@ namespace LearnOpenGL
     void Application::Run()
     {
 
+        float currentFrameTime  = 0.0f;
+        float lastFrameTime     = 0.0f;
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(m_window->m_window))
         {
+            currentFrameTime    = glfwGetTime();
+            m_deltaTime         = currentFrameTime - lastFrameTime;
+            lastFrameTime       = currentFrameTime;
+
             /* Render here */
             glCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 

@@ -20,6 +20,7 @@ namespace LearnOpenGL
         inline const std::string &getTitle() const {return m_title;}
         inline int getWidth() const {return m_width;}
         inline int getHeight() const {return m_height;}
+        inline GLFWwindow *getGlfwWindow() const {return m_window;}
 
         private:
         std::string m_title;

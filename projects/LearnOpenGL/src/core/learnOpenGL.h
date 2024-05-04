@@ -12,3 +12,4 @@
 #include "shader.h"
 #include "texture.h"
 #include "../debug/glcall.h"
+#include "../systems/camera.h"
