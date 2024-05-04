@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace LearnOpenGL
 {
     class Window;
+    class Layer;
 
     class Application
     {
@@ -13,8 +15,13 @@ namespace LearnOpenGL
 
         void Run();
 
+        void appendLayer(Layer *layer);
+
+        inline Window *getWindow() const {return m_window;}
+
         private:
         Window *m_window;
+        std::vector<Layer *> m_layers;
 
 
         void processInput();
