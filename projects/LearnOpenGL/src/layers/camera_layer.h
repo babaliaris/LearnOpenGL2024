@@ -18,5 +18,7 @@ namespace LearnOpenGL
         Texture *m_texture;
         unsigned int m_vao, m_vbo;
         glm::vec3 m_cubePositions[10];
+        glm::mat4 m_view;
+        float m_rotationSpeed = 50.0f;
     };
 }

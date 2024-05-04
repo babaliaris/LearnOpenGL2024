@@ -94,8 +94,6 @@ namespace LearnOpenGL
 
         glm::mat4 view  = glm::mat4(1.0f);
         glm::mat4 proj  = glm::mat4(1.0f);
-        
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.0f));
 
         proj = glm::perspective(
             glm::radians(45.0f),
@@ -104,7 +102,6 @@ namespace LearnOpenGL
             100.0f);
 
 
-        m_shader->SetUniform("view", view);
         m_shader->SetUniform("proj", proj);
 
 
@@ -118,12 +115,12 @@ namespace LearnOpenGL
         m_cubePositions[7] = glm::vec3( 1.5f,  2.0f, -2.5f);
         m_cubePositions[8] = glm::vec3( 1.5f,  0.2f, -1.5f);
         m_cubePositions[9] = glm::vec3(-1.3f,  1.0f, -1.5f);
+
     }
 
 
     void CameraLayer::onUpdate(Application *app)
     {
-
         for(unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
@@ -141,6 +138,13 @@ namespace LearnOpenGL
             m_shader->Unbind();
             m_texture->UnBind();
         }
+
+        float camz = glm::cos( glm::radians(glfwGetTime()) * m_rotationSpeed ) * 10.0f;
+        float camx = glm::sin( glm::radians(glfwGetTime()) * m_rotationSpeed ) * 10.0f;
+
+        m_view = glm::lookAt(glm::vec3(camx, 0.0f, camz), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        m_shader->SetUniform("view", m_view);
     }
 
 }
