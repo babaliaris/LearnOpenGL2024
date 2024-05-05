@@ -6,12 +6,14 @@
 #include "layers/camera_layer.h"
 #include "layers/camera_system.h"
 #include "layers/colors.h"
+#include "layers/lighting_maps.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
 #define CAMERA "CAMERA"
 #define CAMERA_SYSTEM "CAMERA_SYSTEM"
 #define COLORS "COLORS"
+#define LIGHTING_MAPS "LIGHTING_MAPS"
 
 
 int main(void)
@@ -23,7 +25,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = COLORS;
+    std::string loadingLayer = LIGHTING_MAPS;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -54,6 +56,12 @@ int main(void)
     else if (loadingLayer == COLORS)
     {
         LearnOpenGL::ColorsLayer *new_layer = new LearnOpenGL::ColorsLayer(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == LIGHTING_MAPS)
+    {
+        LearnOpenGL::LightingMaps *new_layer = new LearnOpenGL::LightingMaps(app);
         app->appendLayer(new_layer);
     }
 
