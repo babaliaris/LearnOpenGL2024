@@ -1,4 +1,5 @@
 #include "core/application.h"
+#include "layers/cameraFunctionalityLayer.h"
 
 #include "layers/coordinate_systems.h"
 #include "layers/more_3D.h"
@@ -14,6 +15,10 @@
 int main(void)
 {
     LearnOpenGL::Application *app = new LearnOpenGL::Application("LearnOpenGL", 800, 600);
+
+    //Create a camera and append it to the layers.
+    LearnOpenGL::CameraFunctionalityLayer *camFunctionality = new LearnOpenGL::CameraFunctionalityLayer(app);
+    app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
     std::string loadingLayer = CAMERA_SYSTEM;
@@ -40,7 +45,7 @@ int main(void)
 
     else if (loadingLayer == CAMERA_SYSTEM)
     {
-        LearnOpenGL::CameraSystem *new_layer = new LearnOpenGL::CameraSystem();
+        LearnOpenGL::CameraSystem *new_layer = new LearnOpenGL::CameraSystem(app);
         app->appendLayer(new_layer);
     }
 

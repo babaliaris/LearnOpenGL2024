@@ -9,6 +9,8 @@ namespace LearnOpenGL
 
     class Application
     {
+        friend class Layer;
+        
         public:
         Application(const std::string &title, int width, int height);
         ~Application();

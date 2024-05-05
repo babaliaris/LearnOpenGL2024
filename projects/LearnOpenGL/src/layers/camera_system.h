@@ -8,20 +8,17 @@ namespace LearnOpenGL
     class CameraSystem : public LearnOpenGL::Layer
     {
         public:
-        CameraSystem();
+        CameraSystem(Application *app);
         virtual ~CameraSystem();
 
         virtual void onStart(Application *app) override;
         virtual void onUpdate(Application *app) override;
-
-        void processInput(GLFWwindow *window, Application *app);
 
         private:
         Shader *m_shader;
         Texture *m_texture;
         unsigned int m_vao, m_vbo;
         glm::vec3 m_cubePositions[10];
-        float m_moveSpeed;
         Camera3D *m_camera;
     };
 }
