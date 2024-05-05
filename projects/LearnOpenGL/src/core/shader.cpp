@@ -128,6 +128,15 @@ LearnOpenGL::Shader::Shader(const char *vertex_file, const char *fragment_file)
 }
 
 
+LearnOpenGL::Shader::Shader(const std::string &vertex_file, const std::string &fragment_file)
+{
+    std::string vertex_source = LoadSourceFromFile(vertex_file.c_str());
+    std::string fragment_source = LoadSourceFromFile(fragment_file.c_str());
+
+    m_id = CreateProgram(vertex_source, fragment_source);
+}
+
+
 LearnOpenGL::Shader::~Shader()
 {
     glCALL(glDeleteProgram(m_id));
@@ -180,6 +189,46 @@ void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat4 &mat)
     else
     {
         glCALL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat)));
+    }
+
+    this->Unbind();
+}
+
+
+void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat3 &mat)
+{
+    this->Bind();
+
+    glCALL(int location = glGetUniformLocation(m_id, name));
+
+    if (location == -1)
+    {
+        VAMP_WARN("[Uniform]: %s, was not found.", name);
+    }
+
+    else
+    {
+        glCALL(glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat)));
+    }
+
+    this->Unbind();
+}
+
+
+void LearnOpenGL::Shader::SetUniform(const char *name, const glm::vec3 &vec3)
+{
+    this->Bind();
+
+    glCALL(int location = glGetUniformLocation(m_id, name));
+
+    if (location == -1)
+    {
+        VAMP_WARN("[Uniform]: %s, was not found.", name);
+    }
+
+    else
+    {
+        glCALL(glUniform3f(location, vec3.x, vec3.y, vec3.z));
     }
 
     this->Unbind();

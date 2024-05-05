@@ -8,6 +8,7 @@ namespace LearnOpenGL
     {
         public:
         Shader(const char *vertex_file, const char *fragment_file);
+        Shader(const std::string &vertex_file, const std::string &fragment_file);
         ~Shader();
 
         void Bind();
@@ -15,6 +16,8 @@ namespace LearnOpenGL
 
         void SetUniform(const char *name, int value);
         void SetUniform(const char *name, const glm::mat4 &mat);
+        void SetUniform(const char *name, const glm::mat3 &mat);
+        void SetUniform(const char *name, const glm::vec3 &vec3);
 
         private:
         unsigned int m_id;

@@ -98,8 +98,6 @@ void glfwCursorPosCallback(GLFWwindow *window, double x, double y)
     else if (this_->m_pitch < -89.0f)
         this_->m_pitch = -89.0f;
 
-    VAMP_INFO("(%f, %f)", this_->m_yaw , this_->m_pitch);
-
     glm::vec3 new_camera_forward;
     new_camera_forward.x = glm::cos(glm::radians(this_->m_yaw)) * glm::cos(glm::radians(this_->m_pitch));
     new_camera_forward.y = glm::sin(glm::radians(this_->m_pitch));
