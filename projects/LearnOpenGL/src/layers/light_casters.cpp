@@ -189,7 +189,7 @@ namespace LearnOpenGL
         //Material Properties.
         m_shaderObject->SetUniform("u_material.diffuse", 0);
         m_shaderObject->SetUniform("u_material.specular", 1);
-        m_shaderObject->SetUniform("u_material.shininess", 32.0f);
+        m_shaderObject->SetUniform("u_material.shininess", 64.0f);
 
         //Directional Light Properties.
         m_shaderObject->SetUniform("u_directionalLight.direction", m_directionalLight.direction);

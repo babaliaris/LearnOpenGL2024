@@ -76,14 +76,11 @@ void main()
     vec4 spot_impacted  = calculateImpactedLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
     vec4 spot_specular  = calculateSpecularLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
 
+    vec4 total_diffuse  = ambient + impacted_directional + point_impacted + spot_impacted;
+    vec4 total_specular = specular_directional + point_specular + spot_specular;
 
 
-    vec4 total_light    = ambient + impacted_directional + specular_directional; //Directional lighting contribution.
-    total_light         = total_light + point_impacted + point_specular; //Point Lighting contribution.
-    total_light         = total_light + spot_impacted + spot_specular; //Spot Lighting contribution.
-
-
-    aColor = texture(u_material.diffuse, aTexCoord) * total_light;
+    aColor = texture(u_material.diffuse, aTexCoord) * total_diffuse + texture(u_material.specular, aTexCoord) * total_specular;
 }
 
 
