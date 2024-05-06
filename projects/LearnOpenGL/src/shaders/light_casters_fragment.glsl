@@ -42,6 +42,7 @@ uniform float               u_ambientFactor;
 vec4 calculateAmbientLight();
 vec4 calculateImpactedLight(vec3 diffuse, float brightness, vec3 direction);
 vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction);
+vec3 calculatePointLight();
 
 
 
@@ -49,14 +50,19 @@ void main()
 {
     vec4 ambient                = calculateAmbientLight();
 
-    vec4 diffuse_directional    = calculateImpactedLight(u_directionalLight.diffuse,
+    vec4 impacted_directional    = calculateImpactedLight(u_directionalLight.diffuse,
                                     u_directionalLight.brightness, u_directionalLight.direction);
 
     vec4 specular_directional   = calculateSpecularLight(u_directionalLight.diffuse,
                                     u_directionalLight.brightness, u_directionalLight.direction);
 
+    vec3 point_attenuated   = calculatePointLight();
+    vec4 point_impacted     = calculateImpactedLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
+    vec4 point_specular     = calculateSpecularLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
 
-    vec4 total_light = ambient + diffuse_directional + specular_directional;
+
+    vec4 total_light    = ambient + impacted_directional + specular_directional; //Directional lighting contribution.
+    total_light         = total_light + point_impacted + point_specular; //Point Lighting contribution.
 
     aColor = texture(u_material.diffuse, aTexCoord) * total_light;
 }
@@ -95,3 +101,10 @@ vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction)
 
 
 
+vec3 calculatePointLight()
+{
+    float light_distance = length(aFragPos - u_pointLight.position);
+    float attenuation = 1 / ( u_pointLight.kc + u_pointLight.kl * light_distance + u_pointLight.kq * pow(light_distance, 2) );
+
+    return u_pointLight.diffuse * attenuation;
+}

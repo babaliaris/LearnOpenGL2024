@@ -14,6 +14,14 @@ namespace LearnOpenGL
             float brightness;
         };
 
+        struct PointLight
+        {
+            glm::vec3 position;
+            glm::vec3 diffuse;
+            float brightness;
+            float kc, kl, kq;
+        };
+
         public:
         LightingCasters(Application *app);
         virtual ~LightingCasters();
@@ -24,6 +32,7 @@ namespace LearnOpenGL
         private:
         Application *m_app;
         DirectionalLight m_directionalLight;
+        PointLight m_pointLight;
         Shader *m_shaderObject;
         Texture *m_diffuse, *m_specular;
         unsigned int m_vaoObject, m_vboObject;

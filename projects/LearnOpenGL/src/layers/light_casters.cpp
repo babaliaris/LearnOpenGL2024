@@ -16,9 +16,19 @@ namespace LearnOpenGL
     LightingCasters::LightingCasters(Application *app)
     : Layer("ColorsLayer", app), m_app(app)
     {
+        float disableDirectionalLight = 0.0f;
+
         m_directionalLight.direction    = glm::vec3(0.0f, -4.0f, -1.0f);
         m_directionalLight.diffuse      = glm::vec3(1.0f, 1.0f, 1.0f);
-        m_directionalLight.brightness   = 1.0f;
+        m_directionalLight.brightness   = 1.0f * disableDirectionalLight;
+
+        m_pointLight.position   = glm::vec3(0.0f, 0.0f, 4.0f);
+        m_pointLight.diffuse    = glm::vec3(1.0f, 1.0f, 1.0f);
+        m_pointLight.brightness = 1.0f;
+        m_pointLight.kc = 1.0f;
+        m_pointLight.kl = 0.09;
+        m_pointLight.kq = 0.032;
+
     }
 
 
@@ -172,10 +182,21 @@ namespace LearnOpenGL
         m_shaderObject->SetUniform("u_material.specular", 1);
         m_shaderObject->SetUniform("u_material.shininess", 32.0f);
 
-        //Placed Light Properties.
+        //Directional Light Properties.
         m_shaderObject->SetUniform("u_directionalLight.direction", m_directionalLight.direction);
         m_shaderObject->SetUniform("u_directionalLight.diffuse", m_directionalLight.diffuse);
         m_shaderObject->SetUniform("u_directionalLight.brightness", m_directionalLight.brightness);
+
+
+        //Point Light Properties.
+        m_shaderObject->SetUniform("u_pointLight.position", m_pointLight.position);
+        m_shaderObject->SetUniform("u_pointLight.diffuse", m_pointLight.diffuse);
+        m_shaderObject->SetUniform("u_pointLight.brightness", m_pointLight.brightness);
+        m_shaderObject->SetUniform("u_pointLight.kc", m_pointLight.kc);
+        m_shaderObject->SetUniform("u_pointLight.kl", m_pointLight.kl);
+        m_shaderObject->SetUniform("u_pointLight.kq", m_pointLight.kq);
+
+
 
         //Ambient Strength
         m_shaderObject->SetUniform("u_ambientFactor", 0.1f);
