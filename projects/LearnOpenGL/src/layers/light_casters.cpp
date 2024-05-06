@@ -3,13 +3,22 @@
 #include "cameraFunctionalityLayer.h"
 
 
+/**
+ * Keybard Binds
+ * Number 1: Reduce directional light brightness.
+ * Number 2: Increase directional light brightness.
+*/
+
+
 namespace LearnOpenGL
 {
 
     LightingCasters::LightingCasters(Application *app)
-    : Layer("ColorsLayer", app), m_app(app),
-      m_directionalLightDirection(0.0f, -10.0f, -1.0f)
+    : Layer("ColorsLayer", app), m_app(app)
     {
+        m_directionalLight.direction    = glm::vec3(0.0f, -4.0f, -1.0f);
+        m_directionalLight.diffuse      = glm::vec3(1.0f, 1.0f, 1.0f);
+        m_directionalLight.brightness   = 1.0f;
     }
 
 
@@ -43,8 +52,11 @@ namespace LearnOpenGL
     }
 
 
+
     void LightingCasters::onUpdate(Application *app)
     {
+        this->ProcessInput();
+
         m_shaderObject->SetUniform("view", m_camera->getView());
         m_shaderObject->SetUniform("u_CamPos", m_camera->getPosition());
 
@@ -161,12 +173,12 @@ namespace LearnOpenGL
         m_shaderObject->SetUniform("u_material.shininess", 32.0f);
 
         //Placed Light Properties.
-        m_shaderObject->SetUniform("u_directionalLight.direction", m_directionalLightDirection);
-        m_shaderObject->SetUniform("u_directionalLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-        m_shaderObject->SetUniform("u_directionalLight.brightness", 1.0f);
+        m_shaderObject->SetUniform("u_directionalLight.direction", m_directionalLight.direction);
+        m_shaderObject->SetUniform("u_directionalLight.diffuse", m_directionalLight.diffuse);
+        m_shaderObject->SetUniform("u_directionalLight.brightness", m_directionalLight.brightness);
 
         //Ambient Strength
-        m_shaderObject->SetUniform("m_ambientFactor", 0.1f);
+        m_shaderObject->SetUniform("u_ambientFactor", 0.1f);
 
         //---------------Fragment Shader Uniforms Set---------------//
 
@@ -184,6 +196,27 @@ namespace LearnOpenGL
         //Vertex Uniforms Set.
         m_shaderObject->SetUniform("proj", proj);
         //-----------------------------------Object Draw Call Preperation-----------------------------------//
+    }
+
+
+
+    void LightingCasters::ProcessInput()
+    {
+        GLFWwindow *window = m_app->getWindow()->getGlfwWindow();
+
+        if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        {
+            m_directionalLight.brightness += 0.01;
+            m_directionalLight.brightness = m_directionalLight.brightness > 1 ? 1 : m_directionalLight.brightness;
+            m_shaderObject->SetUniform("u_directionalLight.brightness", m_directionalLight.brightness);
+        }
+
+        else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        {
+            m_directionalLight.brightness -= 0.01;
+            m_directionalLight.brightness = m_directionalLight.brightness < 0 ? 0 : m_directionalLight.brightness;
+            m_shaderObject->SetUniform("u_directionalLight.brightness", m_directionalLight.brightness);
+        }
     }
 
 }
