@@ -18,10 +18,20 @@ struct PointLight
 {
     vec3    position;
     vec3    diffuse;
+    vec3    attenuation;
     float   brightness;
-    float   kc;
-    float   kl;
-    float   kq;
+};
+
+
+struct SpotLight
+{
+    vec3 position;
+    vec3 direction;
+    vec3 diffuse;
+    vec3 attenuation;
+    float brightness;
+    float cutoff;
+    float outer;
 };
 
 struct Material
@@ -35,6 +45,7 @@ struct Material
 uniform vec3                u_CamPos;
 uniform DirectionalLight    u_directionalLight;
 uniform PointLight          u_pointLight;
+uniform SpotLight           u_spotLight;
 uniform Material            u_material;
 uniform float               u_ambientFactor;
 
@@ -42,7 +53,8 @@ uniform float               u_ambientFactor;
 vec4 calculateAmbientLight();
 vec4 calculateImpactedLight(vec3 diffuse, float brightness, vec3 direction);
 vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction);
-vec3 calculatePointLight();
+vec3 attenuateLight(vec3 diffuse, vec3 position, vec3 coefficients);
+vec3 calculateSpotLight();
 
 
 
@@ -56,13 +68,20 @@ void main()
     vec4 specular_directional   = calculateSpecularLight(u_directionalLight.diffuse,
                                     u_directionalLight.brightness, u_directionalLight.direction);
 
-    vec3 point_attenuated   = calculatePointLight();
-    vec4 point_impacted     = calculateImpactedLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
-    vec4 point_specular     = calculateSpecularLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
+    vec3 point_attenuated       = attenuateLight(u_pointLight.diffuse, u_pointLight.position, u_pointLight.attenuation);
+    vec4 point_impacted         = calculateImpactedLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
+    vec4 point_specular         = calculateSpecularLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
+
+    vec3 spot_light     = attenuateLight(calculateSpotLight(), u_spotLight.position, u_spotLight.attenuation);
+    vec4 spot_impacted  = calculateImpactedLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
+    vec4 spot_specular  = calculateSpecularLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
+
 
 
     vec4 total_light    = ambient + impacted_directional + specular_directional; //Directional lighting contribution.
     total_light         = total_light + point_impacted + point_specular; //Point Lighting contribution.
+    total_light         = total_light + spot_impacted + spot_specular; //Spot Lighting contribution.
+
 
     aColor = texture(u_material.diffuse, aTexCoord) * total_light;
 }
@@ -101,10 +120,27 @@ vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction)
 
 
 
-vec3 calculatePointLight()
+vec3 attenuateLight(vec3 diffuse, vec3 position, vec3 coefficients)
 {
-    float light_distance = length(aFragPos - u_pointLight.position);
-    float attenuation = 1 / ( u_pointLight.kc + u_pointLight.kl * light_distance + u_pointLight.kq * pow(light_distance, 2) );
+    float light_distance    = length(aFragPos - position);
+    float attenuation       = 1 / ( coefficients.x + coefficients.y * light_distance + coefficients.z * pow(light_distance, 2) );
 
-    return u_pointLight.diffuse * attenuation;
+    return diffuse * attenuation;
+}
+
+
+vec3 calculateSpotLight()
+{
+    vec3 lightDir = normalize(aFragPos - u_spotLight.position);
+
+    float theta     = dot(-lightDir, -normalize(u_spotLight.direction));
+    float ephilon   = u_spotLight.cutoff - u_spotLight.outer;
+    float intensity = clamp( (theta - u_spotLight.outer) / ephilon, 0.0f, 1.0f );
+
+    if (theta > u_spotLight.outer)
+    {
+        return u_spotLight.diffuse * intensity;
+    }
+
+    return vec3(0.0f, 0.0f, 0.0f);
 }

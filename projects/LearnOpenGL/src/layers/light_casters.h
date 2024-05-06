@@ -18,8 +18,20 @@ namespace LearnOpenGL
         {
             glm::vec3 position;
             glm::vec3 diffuse;
+            glm::vec3 attenuation;
             float brightness;
             float kc, kl, kq;
+        };
+
+        struct SpotLight
+        {
+            glm::vec3 position;
+            glm::vec3 direction;
+            glm::vec3 diffuse;
+            glm::vec3 attenuation;
+            float brightness;
+            float cutoff;
+            float outer;
         };
 
         public:
@@ -33,6 +45,7 @@ namespace LearnOpenGL
         Application *m_app;
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
+        SpotLight m_spotLight;
         Shader *m_shaderObject;
         Texture *m_diffuse, *m_specular;
         unsigned int m_vaoObject, m_vboObject;

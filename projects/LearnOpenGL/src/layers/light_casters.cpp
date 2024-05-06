@@ -4,9 +4,11 @@
 
 
 /**
- * Keybard Binds
+ * Keyboard Binds
  * Number 1: Reduce directional light brightness.
  * Number 2: Increase directional light brightness.
+ * Number 3: Reduce point light brightness.
+ * Number 4: Increase point light brightness.
 */
 
 
@@ -16,18 +18,20 @@ namespace LearnOpenGL
     LightingCasters::LightingCasters(Application *app)
     : Layer("ColorsLayer", app), m_app(app)
     {
-        float disableDirectionalLight = 0.0f;
-
         m_directionalLight.direction    = glm::vec3(0.0f, -4.0f, -1.0f);
         m_directionalLight.diffuse      = glm::vec3(1.0f, 1.0f, 1.0f);
-        m_directionalLight.brightness   = 1.0f * disableDirectionalLight;
+        m_directionalLight.brightness   = 0.0f;
 
         m_pointLight.position   = glm::vec3(0.0f, 0.0f, 4.0f);
         m_pointLight.diffuse    = glm::vec3(1.0f, 1.0f, 1.0f);
-        m_pointLight.brightness = 1.0f;
-        m_pointLight.kc = 1.0f;
-        m_pointLight.kl = 0.09;
-        m_pointLight.kq = 0.032;
+        m_pointLight.brightness = 0.0f;
+        m_pointLight.attenuation= glm::vec3(1.0f, 0.09f, 0.032f);
+
+        m_spotLight.diffuse     = glm::vec3(1.0f, 1.0f, 1.0f);
+        m_spotLight.brightness  = 1.0f;
+        m_spotLight.attenuation = glm::vec3(1.0f, 0.09f, 0.032f);
+        m_spotLight.cutoff      = glm::cos(glm::radians(12.0f));
+        m_spotLight.outer       = glm::cos(glm::radians(15.0f));
 
     }
 
@@ -69,6 +73,11 @@ namespace LearnOpenGL
 
         m_shaderObject->SetUniform("view", m_camera->getView());
         m_shaderObject->SetUniform("u_CamPos", m_camera->getPosition());
+
+        m_spotLight.position    = m_camera->getPosition();
+        m_spotLight.direction   = m_camera->getForward();
+        m_shaderObject->SetUniform("u_spotLight.position", m_spotLight.position);
+        m_shaderObject->SetUniform("u_spotLight.direction", m_spotLight.direction);
 
         //Draw the Objects.
         for(unsigned int i = 0; i < 10; i++)
@@ -192,9 +201,15 @@ namespace LearnOpenGL
         m_shaderObject->SetUniform("u_pointLight.position", m_pointLight.position);
         m_shaderObject->SetUniform("u_pointLight.diffuse", m_pointLight.diffuse);
         m_shaderObject->SetUniform("u_pointLight.brightness", m_pointLight.brightness);
-        m_shaderObject->SetUniform("u_pointLight.kc", m_pointLight.kc);
-        m_shaderObject->SetUniform("u_pointLight.kl", m_pointLight.kl);
-        m_shaderObject->SetUniform("u_pointLight.kq", m_pointLight.kq);
+        m_shaderObject->SetUniform("u_pointLight.attenuation", m_pointLight.attenuation);
+
+
+        //Spot Light Properties.
+        m_shaderObject->SetUniform("u_spotLight.diffuse", m_spotLight.diffuse);
+        m_shaderObject->SetUniform("u_spotLight.brightness", m_spotLight.brightness);
+        m_shaderObject->SetUniform("u_spotLight.attenuation", m_spotLight.attenuation);
+        m_shaderObject->SetUniform("u_spotLight.cutoff", m_spotLight.cutoff);
+        m_shaderObject->SetUniform("u_spotLight.outer", m_spotLight.outer);
 
 
 
@@ -237,6 +252,62 @@ namespace LearnOpenGL
             m_directionalLight.brightness -= 0.01;
             m_directionalLight.brightness = m_directionalLight.brightness < 0 ? 0 : m_directionalLight.brightness;
             m_shaderObject->SetUniform("u_directionalLight.brightness", m_directionalLight.brightness);
+        }
+
+
+        else if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+        {
+            m_pointLight.brightness += 0.01;
+            m_pointLight.brightness = m_pointLight.brightness > 1 ? 1 : m_pointLight.brightness;
+            m_shaderObject->SetUniform("u_pointLight.brightness", m_pointLight.brightness);
+        }
+
+        else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        {
+            m_pointLight.brightness -= 0.01;
+            m_pointLight.brightness = m_pointLight.brightness < 0 ? 0 : m_pointLight.brightness;
+            m_shaderObject->SetUniform("u_pointLight.brightness", m_pointLight.brightness);
+        }
+
+
+        else if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+        {
+            m_spotLight.brightness += 0.01;
+            m_spotLight.brightness = m_spotLight.brightness > 1 ? 1 : m_spotLight.brightness;
+            m_shaderObject->SetUniform("u_spotLight.brightness", m_spotLight.brightness);
+        }
+
+        else if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+        {
+            m_spotLight.brightness -= 0.01;
+            m_spotLight.brightness = m_spotLight.brightness < 0 ? 0 : m_spotLight.brightness;
+            m_shaderObject->SetUniform("u_spotLight.brightness", m_spotLight.brightness);
+        }
+
+        else if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
+        {
+            m_pointLight.attenuation.y -= 0.01;
+            m_pointLight.attenuation.z -= 0.001;
+            m_spotLight.attenuation.y  -= 0.01;
+            m_spotLight.attenuation.z  -= 0.001;
+
+            m_pointLight.attenuation.y = m_pointLight.attenuation.y < 0 ? 0 : m_pointLight.attenuation.y;
+            m_pointLight.attenuation.z = m_pointLight.attenuation.z < 0 ? 0 : m_pointLight.attenuation.z;
+            m_spotLight.attenuation.y = m_spotLight.attenuation.y < 0 ? 0 : m_spotLight.attenuation.y;
+            m_spotLight.attenuation.z = m_spotLight.attenuation.z < 0 ? 0 : m_spotLight.attenuation.z;
+
+            m_shaderObject->SetUniform("u_pointLight.attenuation", m_pointLight.attenuation);
+            m_shaderObject->SetUniform("u_spotLight.attenuation", m_spotLight.attenuation);
+        }
+
+        else if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
+        {
+            m_pointLight.attenuation.y += 0.01;
+            m_pointLight.attenuation.z += 0.001;
+            m_spotLight.attenuation.y  += 0.01;
+            m_spotLight.attenuation.z  += 0.001;
+            m_shaderObject->SetUniform("u_pointLight.attenuation", m_pointLight.attenuation);
+            m_shaderObject->SetUniform("u_spotLight.attenuation", m_spotLight.attenuation);
         }
     }
 

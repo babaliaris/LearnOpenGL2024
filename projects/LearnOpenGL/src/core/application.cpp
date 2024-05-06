@@ -46,6 +46,8 @@ namespace LearnOpenGL
         float currentFrameTime  = 0.0f;
         float lastFrameTime     = 0.0f;
 
+        m_window->setClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(m_window->m_window))
         {
