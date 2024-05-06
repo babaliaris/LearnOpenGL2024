@@ -7,6 +7,7 @@
 #include "layers/camera_system.h"
 #include "layers/colors.h"
 #include "layers/lighting_maps.h"
+#include "layers/light_casters.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -14,6 +15,7 @@
 #define CAMERA_SYSTEM "CAMERA_SYSTEM"
 #define COLORS "COLORS"
 #define LIGHTING_MAPS "LIGHTING_MAPS"
+#define LIGHT_CASTERS "LIGHT_CASTERS"
 
 
 int main(void)
@@ -25,7 +27,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = LIGHTING_MAPS;
+    std::string loadingLayer = LIGHT_CASTERS;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -62,6 +64,12 @@ int main(void)
     else if (loadingLayer == LIGHTING_MAPS)
     {
         LearnOpenGL::LightingMaps *new_layer = new LearnOpenGL::LightingMaps(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == LIGHT_CASTERS)
+    {
+        LearnOpenGL::LightingCasters *new_layer = new LearnOpenGL::LightingCasters(app);
         app->appendLayer(new_layer);
     }
 
