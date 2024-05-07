@@ -41,6 +41,7 @@ namespace LearnOpenGL
         virtual void onUpdate(Application *app) override;
 
         private:
+        unsigned int m_vaoCube, m_vboCube;
         Application *m_app;
         Shader *m_shader;
         Model *m_model;
@@ -48,8 +49,11 @@ namespace LearnOpenGL
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
         SpotLight m_spotLight;
+        Texture *m_cubeDiffuse, *m_cubeSpecular;
 
         private:
         void PrepareModel();
+        void PrepareCubeData();
+        void RenderCube();
     };
 }
