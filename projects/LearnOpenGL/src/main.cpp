@@ -12,6 +12,7 @@
 #include "layers/model_full_phong.h"
 #include "layers/stencil_buffer.h"
 #include "layers/blending.h"
+#include "layers/face_culling.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -24,6 +25,7 @@
 #define MODEL_FULL_PHONG "MODEL_FULL_PHONG"
 #define STENCIL_BUFFER "STENCIL_BUFFER"
 #define BLENDING "BLENDING"
+#define FACE_CULLING "FACE_CULLING"
 
 
 int main(void)
@@ -35,7 +37,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = BLENDING;
+    std::string loadingLayer = FACE_CULLING;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -102,6 +104,12 @@ int main(void)
     else if (loadingLayer == BLENDING)
     {
         LearnOpenGL::Blending *new_layer = new LearnOpenGL::Blending(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == FACE_CULLING)
+    {
+        LearnOpenGL::FaceCulling *new_layer = new LearnOpenGL::FaceCulling(app);
         app->appendLayer(new_layer);
     }
 

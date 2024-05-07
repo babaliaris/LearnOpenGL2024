@@ -24,6 +24,9 @@ namespace LearnOpenGL
         glCALL(glEnable(GL_DEPTH_TEST));
         glCALL(glEnable(GL_STENCIL_TEST));
         glCALL(glEnable(GL_BLEND));
+        glCALL(glEnable(GL_CULL_FACE));
+
+        //Set Blend Function.
         glCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         //Enable the stencil test.
