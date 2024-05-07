@@ -4,8 +4,7 @@
 
 namespace LearnOpenGL
 {
-
-    class ModelFullPhong : public LearnOpenGL::Layer
+    class StencilBuffer : public LearnOpenGL::Layer
     {
         struct DirectionalLight
         {
@@ -35,8 +34,8 @@ namespace LearnOpenGL
         };
 
         public:
-        ModelFullPhong(Application *app);
-        virtual ~ModelFullPhong();
+        StencilBuffer(Application *app);
+        virtual ~StencilBuffer();
 
         virtual void onStart(Application *app) override;
         virtual void onUpdate(Application *app) override;

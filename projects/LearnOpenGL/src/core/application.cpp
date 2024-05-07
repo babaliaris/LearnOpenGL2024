@@ -22,6 +22,12 @@ namespace LearnOpenGL
         m_window = new Window(title, width, height);
 
         glCALL(glEnable(GL_DEPTH_TEST));
+        glCALL(glEnable(GL_STENCIL_TEST));
+
+        //Enable the stencil test.
+        glCALL(glStencilFunc(GL_ALWAYS, 1, 0xFF)); //Always passes.
+        glCALL(glStencilMask(0x00));    //Disable Writting.
+        glCALL(glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP)); //Keep everything in case of writing.
     }
 
 

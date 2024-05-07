@@ -1,9 +1,9 @@
-#include "model_full_phong.h"
+#include "stencil_buffer.h"
 #include "cameraFunctionalityLayer.h"
 
 namespace LearnOpenGL
 {
-    ModelFullPhong::ModelFullPhong(Application *app)
+    StencilBuffer::StencilBuffer(Application *app)
     : Layer("ModelFullPhong", app), m_app(app), m_model(nullptr)
     {
         m_directionalLight.direction    = glm::vec3(0.0f, -4.0f, -1.0f);
@@ -25,7 +25,7 @@ namespace LearnOpenGL
     }
 
 
-    ModelFullPhong::~ModelFullPhong()
+    StencilBuffer::~StencilBuffer()
     {
         delete m_model;
         delete m_shader;
@@ -33,7 +33,7 @@ namespace LearnOpenGL
     }
 
 
-    void ModelFullPhong::onStart(Application *app)
+    void StencilBuffer::onStart(Application *app)
     {
         m_camera = ((CameraFunctionalityLayer *)this->findLayer("CameraFunctionalityLayer"))->getCamera();
 
@@ -41,7 +41,7 @@ namespace LearnOpenGL
     }
 
 
-    void ModelFullPhong::onUpdate(Application *app)
+    void StencilBuffer::onUpdate(Application *app)
     {
         m_shader->SetUniform("u_proj", glm::perspective(glm::radians(45.0f), 
         app->getWindow()->getWidth() / (float)app->getWindow()->getHeight(), 0.1f, 100.0f));
@@ -58,7 +58,7 @@ namespace LearnOpenGL
     }
 
 
-    void ModelFullPhong::PrepareModel()
+    void StencilBuffer::PrepareModel()
     {
         m_shader = new Shader("projects/LearnOpenGL/src/shaders/phong_vertex.glsl",
         "projects/LearnOpenGL/src/shaders/phong_fragment.glsl");
