@@ -20,7 +20,9 @@ namespace LearnOpenGL
     class Mesh
     {
         public:
-        Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture *> &textures);
+        Mesh(void *vertices, signed long int verticiesSize,
+        void *indices, unsigned int indiciesCount, const std::vector<Texture *> &textures);
+
         ~Mesh();
 
         void Draw(Shader *shader);

@@ -10,13 +10,13 @@ out vec3 aFragPos;
 uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_proj;
-uniform mat3 u_normalMat;
+uniform mat4 u_normal;
 
 void main()
 {
     gl_Position = u_proj * u_view * u_model * vec4(m_Pos, 1.0f);
 
     aTexCoord   = m_TexCoord;
-    aNormal     = u_normalMat * m_Normal;
+    aNormal     = mat3(u_normal) * m_Normal;
     aFragPos    = (u_model * vec4(m_Pos, 1.0f)).xyz;
 }

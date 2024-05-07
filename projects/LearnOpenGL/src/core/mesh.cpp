@@ -10,8 +10,9 @@
 
 namespace LearnOpenGL
 {
-    Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture *> &textures)
-    : m_vao(0), m_vbo(0), m_ebo(0), m_indicesCount(indices.size())
+    Mesh::Mesh(void *vertices, signed long int verticiesSize,
+        void *indices, unsigned int indiciesCount, const std::vector<Texture *> &textures)
+    : m_vao(0), m_vbo(0), m_ebo(0), m_indicesCount(indiciesCount)
     {
         //Set up the textures.
         int max_textures = MAX_NUMBER_OF_DIFFUSE_TEXTURES + MAX_NUMBER_OF_SPECULAR_TEXTURES;
@@ -28,23 +29,24 @@ namespace LearnOpenGL
         //VBO
         glCALL(glGenBuffers(1, &m_vbo));
         glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-        glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW));
+        glCALL(glBufferData(GL_ARRAY_BUFFER, verticiesSize, vertices, GL_STATIC_DRAW));
+
 
         //EBO
         glCALL(glGenBuffers(1, &m_ebo));
         glCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo));
-        glCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &indices[0], GL_STATIC_DRAW));
+        glCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indiciesCount, indices, GL_STATIC_DRAW));
 
         //Positions.
-        glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0));
+        glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *)0));
         glCALL(glEnableVertexAttribArray(0));
 
         //Normals.
-        glCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal)));
+        glCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *)(sizeof(float) * 3)));
         glCALL(glEnableVertexAttribArray(1));
 
         //Texture Coordinates.
-        glCALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texCoordinate)));
+        glCALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *)(sizeof(float) * 6)));
         glCALL(glEnableVertexAttribArray(2));
 
 
@@ -97,7 +99,8 @@ namespace LearnOpenGL
 
         shader->SetUniform("u_material.numOfDiffuse", diffuse_number);
         shader->SetUniform("u_material.numOfSpecular", specular_number);
-
+        
+        shader->Bind();
         glCALL(glBindVertexArray(m_vao));
         glCALL(glDrawElements(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0));
         glCALL(glBindVertexArray(0));

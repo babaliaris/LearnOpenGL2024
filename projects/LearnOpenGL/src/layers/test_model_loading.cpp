@@ -41,16 +41,16 @@ namespace LearnOpenGL
     void TestModelLoading::PrepareMesh()
     {   
         //Vertices.
-        std::vector<Vertex> vertices = {
-                //Positions                         Normals                     Texture Coordinates
-            {glm::vec3(-0.5f, -0.5f, 0.0f),     glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-            {glm::vec3(0.5f, -0.5f, 0.0f),      glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f)},
-            {glm::vec3(0.5f, 0.5f, 0.0f),       glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-            {glm::vec3(-0.5f,   0.5f,  0.0f),   glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f)}
+        float vertices[] = {
+            //Positions                      Normals          Texture Coordinates
+            -0.5f,  -0.5f,  0.0f,       0.0f, 0.0f, 1.0f,       0.0f, 0.0f, //0: Bottom Left
+             0.5f,  -0.5f,  0.0f,       0.0f, 0.0f, 1.0f,       1.0f, 0.0f, //1: Bottom Right
+             0.5f,   0.5f,  0.0f,       0.0f, 0.0f, 1.0f,       1.0f, 1.0f, //2: Top Right
+            -0.5f,   0.5f,  0.0f,       0.0f, 0.0f, 1.0f,       0.0f, 1.0f  //3: Top Left
         };
 
         //Indicies
-        std::vector<unsigned int> indicies = {
+        unsigned int indicies[6] = {
             0, 1, 2, //Down Triangle
             0, 2, 3  //Up Triangle
         };
@@ -64,14 +64,19 @@ namespace LearnOpenGL
         m_shader = new Shader("projects/LearnOpenGL/src/shaders/test_model_loading_vertex.glsl",
         "projects/LearnOpenGL/src/shaders/test_model_loading_fragment.glsl");
 
-        m_shader->SetUniform("u_model", glm::mat4(1.0f));
-        //m_shader->SetUniform("u_normalMat", glm::mat3(1.0f));
+        glm::mat4 model     = glm::mat4(1.0f);
+        glm::mat4 normal    = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
+        normal = glm::transpose(glm::inverse(model));
+
+        m_shader->SetUniform("u_model", model);
+        m_shader->SetUniform("u_normal", normal);
 
         std::vector<Texture *> textures = {
             m_diffuse,
             m_specular
         };
 
-        m_mesh = new Mesh(vertices, indicies, textures);
+        m_mesh = new Mesh(vertices, sizeof(vertices), indicies, 6, textures);
     }
 }
