@@ -53,8 +53,35 @@ namespace LearnOpenGL
         m_shader->SetUniform("u_spotLight.direction", m_camera->getForward());
         m_shader->SetUniform("u_spotLight.position", m_camera->getPosition());
         
-        if (m_model)
-            m_model->Draw(m_shader);
+        //Prepare stencil buffer for writting with 1s when the depth test passes.
+        glCALL(glStencilFunc(GL_ALWAYS, 1, 0xFF)); //Make sure stencil always passes.
+        glCALL(glStencilMask(0xFF)); //Enable stencil writting.
+        glCALL(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)); //Replace with 1 if depth passes.
+        m_shader->SetUniform("u_enableObjectOutline", 0); //Phong lighting model.
+
+        //Render the model.
+        if (m_model) m_model->Draw(m_shader);
+
+        //Disable stencil writting and prepare for comparizon.
+        glCALL(glStencilFunc(GL_NOTEQUAL, 1, 0xFF)); //If stencil values != 1, pass and draw the outline.
+        glCALL(glStencilMask(0x00)); //Disable stencil writting.
+        glCALL(glDisable(GL_DEPTH_TEST)); //Disable depth test so that the outline will not be overitten.
+
+        //Draw the scaled model and enable outline mode in the shader.
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
+        m_shader->SetUniform("u_enableObjectOutline", 1);
+        m_shader->SetUniform("u_model", model);
+        if (m_model) m_model->Draw(m_shader);
+        model = glm::mat4(1.0f);
+        m_shader->SetUniform("u_model", model);
+
+        //Re-enable phong model and disable stencil by let in it to always pass.
+        m_shader->SetUniform("u_enableObjectOutline", 0);
+        glCALL(glStencilFunc(GL_ALWAYS, 1, 0xFF));
+        glCALL(glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP));
+        glCALL(glEnable(GL_DEPTH_TEST)); //Enable depth test.
+
     }
 
 
@@ -65,7 +92,6 @@ namespace LearnOpenGL
 
         glm::mat4 model     = glm::mat4(1.0f);
         glm::mat4 normal    = glm::mat4(1.0f);
-        model               = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.0f));
         normal              = glm::transpose(glm::inverse(model));
 
         m_shader->SetUniform("u_model", model);
