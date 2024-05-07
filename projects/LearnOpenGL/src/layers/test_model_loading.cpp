@@ -40,6 +40,7 @@ namespace LearnOpenGL
 
     void TestModelLoading::PrepareMesh()
     {   
+        /*
         //Vertices.
         float vertices[] = {
             //Positions                      Normals          Texture Coordinates
@@ -54,6 +55,20 @@ namespace LearnOpenGL
             0, 1, 2, //Down Triangle
             0, 2, 3  //Up Triangle
         };
+        */
+
+       std::vector<Vertex> verticies = {
+            //         Positions                        Normals                Texture Coordinates
+            { glm::vec3(-0.5f,  -0.5f,  0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),  glm::vec2(0.0f, 0.0f) }, //0: Bottom Left
+            {  glm::vec3(0.5f,  -0.5f,  0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),  glm::vec2(1.0f, 0.0f) }, //1: Bottom Right
+            {  glm::vec3(0.5f,   0.5f,  0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),  glm::vec2(1.0f, 1.0f) }, //2: Top Right
+            { glm::vec3(-0.5f,   0.5f,  0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),  glm::vec2(0.0f, 1.0f) }  //3: Top Left
+       };
+
+       std::vector<unsigned int> indicies = {
+            0, 1, 2, //Down Triangle
+            0, 2, 3  //Up Triangle
+       };
 
         m_diffuse = new Texture("projects/LearnOpenGL/resources/diffuse_container.png");
         m_diffuse->setType(TextureTypeE::DIFFUSE);
@@ -77,6 +92,6 @@ namespace LearnOpenGL
             m_specular
         };
 
-        m_mesh = new Mesh(vertices, sizeof(vertices), indicies, 6, textures);
+        m_mesh = new Mesh(verticies, indicies, textures);
     }
 }
