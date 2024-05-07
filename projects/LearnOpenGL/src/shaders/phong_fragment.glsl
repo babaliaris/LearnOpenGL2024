@@ -54,6 +54,7 @@ struct Material
 uniform int                 u_numberOfDirectionalLights;
 uniform int                 u_numberOfPointLights;
 uniform int                 u_numberOfSpotLights;
+uniform int                 u_enableObjectOutline;
 uniform vec3                u_CamPos;
 uniform DirectionalLight    u_directionalLight;
 uniform PointLight          u_pointLight;
@@ -62,6 +63,7 @@ uniform Material            u_material;
 uniform float               u_ambientFactor;
 
 
+vec4 phongModel();
 vec4 calculateAmbientLight();
 vec4 calculateImpactedLight(vec3 diffuse, float brightness, vec3 direction);
 vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction);
@@ -71,6 +73,20 @@ vec3 calculateSpotLight();
 
 
 void main()
+{
+    if (u_enableObjectOutline == 1)
+    {
+        aColor = vec4(0.04, 0.28, 0.26, 1.0);
+    }
+
+    else
+    {
+        aColor = phongModel();
+    }
+}
+
+
+vec4 phongModel()
 {
     //------------------Initialize Lights------------------//
     vec4 ambient = calculateAmbientLight();
@@ -122,19 +138,19 @@ void main()
     //Diffuce and Specular maps.
     if (u_material.numOfDiffuse == 1 && u_material.numOfSpecular == 1)
     {
-        aColor = texture(u_material.diffuse0, aTexCoord) * total_diffuse + texture(u_material.specular0, aTexCoord) * total_specular;
+        return texture(u_material.diffuse0, aTexCoord) * total_diffuse + texture(u_material.specular0, aTexCoord) * total_specular;
     }
 
     //Diffuse only.
     else if (u_material.numOfDiffuse == 1 && u_material.numOfSpecular == 0)
     {
-        aColor = texture(u_material.diffuse0, aTexCoord) * total_diffuse;
+        return texture(u_material.diffuse0, aTexCoord) * total_diffuse;
     }
 
     //No textures at all.
     else
     {
-        aColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
+        return vec4(0.5f, 0.5f, 0.5f, 1.0f);
     }
 }
 

@@ -70,6 +70,7 @@ namespace LearnOpenGL
 
         m_shader->SetUniform("u_model", model);
         m_shader->SetUniform("u_normal", normal);
+        m_shader->SetUniform("u_enableObjectOutline", 0);
 
         m_shader->SetUniform("u_ambientFactor", 0.1f);
         m_shader->SetUniform("u_numberOfDirectionalLights", 1);
