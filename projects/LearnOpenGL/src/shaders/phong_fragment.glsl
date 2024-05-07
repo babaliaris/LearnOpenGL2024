@@ -53,7 +53,7 @@ struct Material
 
 uniform int                 u_numberOfDirectionalLights;
 uniform int                 u_numberOfPointLights;
-uniform int                 u_numberOfSpotLight;
+uniform int                 u_numberOfSpotLights;
 uniform vec3                u_CamPos;
 uniform DirectionalLight    u_directionalLight;
 uniform PointLight          u_pointLight;
@@ -109,7 +109,7 @@ void main()
 
 
     //Calculate Spot Lighting.
-    if (u_numberOfSpotLight > 0)
+    if (u_numberOfSpotLights > 0)
     {
         spot_light     = attenuateLight(calculateSpotLight(), u_spotLight.position, u_spotLight.attenuation);
         spot_impacted  = calculateImpactedLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);

@@ -16,13 +16,12 @@ namespace LearnOpenGL
         m_pointLight.brightness = 1.0f;
         m_pointLight.attenuation= glm::vec3(1.0f, 0.09f, 0.032f);
 
-        /*
+        
         m_spotLight.diffuse     = glm::vec3(1.0f, 1.0f, 1.0f);
         m_spotLight.brightness  = 1.0f;
         m_spotLight.attenuation = glm::vec3(1.0f, 0.09f, 0.032f);
         m_spotLight.cutoff      = glm::cos(glm::radians(12.0f));
         m_spotLight.outer       = glm::cos(glm::radians(15.0f));
-        */
     }
 
 
@@ -50,6 +49,9 @@ namespace LearnOpenGL
         m_shader->SetUniform("u_view", m_camera->getView());
 
         m_shader->SetUniform("u_CamPos", m_camera->getPosition());
+
+        m_shader->SetUniform("u_spotLight.direction", m_camera->getForward());
+        m_shader->SetUniform("u_spotLight.position", m_camera->getPosition());
         
         if (m_model)
             m_model->Draw(m_shader);
@@ -72,7 +74,7 @@ namespace LearnOpenGL
         m_shader->SetUniform("u_ambientFactor", 0.1f);
         m_shader->SetUniform("u_numberOfDirectionalLights", 1);
         m_shader->SetUniform("u_numberOfPointLights", 1);
-        m_shader->SetUniform("u_numberOfSpotLight", 0);
+        m_shader->SetUniform("u_numberOfSpotLights", 1);
 
         //Directional Light Properties.
         m_shader->SetUniform("u_directionalLight.direction", m_directionalLight.direction);
@@ -86,14 +88,13 @@ namespace LearnOpenGL
         m_shader->SetUniform("u_pointLight.brightness", m_pointLight.brightness);
         m_shader->SetUniform("u_pointLight.attenuation", m_pointLight.attenuation);
 
-        /*
+        
         //Spot Light Properties.
         m_shader->SetUniform("u_spotLight.diffuse", m_spotLight.diffuse);
         m_shader->SetUniform("u_spotLight.brightness", m_spotLight.brightness);
         m_shader->SetUniform("u_spotLight.attenuation", m_spotLight.attenuation);
         m_shader->SetUniform("u_spotLight.cutoff", m_spotLight.cutoff);
         m_shader->SetUniform("u_spotLight.outer", m_spotLight.outer);
-        */
 
         m_model = new Model("projects/LearnOpenGL/resources/models/backpack/backpack.obj");
     }

@@ -48,6 +48,7 @@ namespace LearnOpenGL
         Camera3D *m_camera;
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
+        SpotLight m_spotLight;
 
         private:
         void PrepareMesh();
