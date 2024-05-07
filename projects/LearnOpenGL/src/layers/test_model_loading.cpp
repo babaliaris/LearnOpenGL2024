@@ -12,10 +12,9 @@ namespace LearnOpenGL
 
     TestModelLoading::~TestModelLoading()
     {
-        delete m_diffuse;
-        delete m_specular;
+        delete m_model;
         delete m_shader;
-        delete m_mesh;
+
     }
 
 
@@ -34,7 +33,7 @@ namespace LearnOpenGL
 
         m_shader->SetUniform("u_view", m_camera->getView());
         
-        m_mesh->Draw(m_shader);
+        m_model->Draw(m_shader);
     }
 
 
@@ -57,6 +56,7 @@ namespace LearnOpenGL
         };
         */
 
+       /*
        std::vector<Vertex> verticies = {
             //         Positions                        Normals                Texture Coordinates
             { glm::vec3(-0.5f,  -0.5f,  0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),  glm::vec2(0.0f, 0.0f) }, //0: Bottom Left
@@ -69,12 +69,7 @@ namespace LearnOpenGL
             0, 1, 2, //Down Triangle
             0, 2, 3  //Up Triangle
        };
-
-        m_diffuse = new Texture("projects/LearnOpenGL/resources/diffuse_container.png");
-        m_diffuse->setType(TextureTypeE::DIFFUSE);
-
-        m_specular = new Texture("projects/LearnOpenGL/resources/specular_container.png");
-        m_specular->setType(TextureTypeE::SPECULAR);
+       */
 
         m_shader = new Shader("projects/LearnOpenGL/src/shaders/test_model_loading_vertex.glsl",
         "projects/LearnOpenGL/src/shaders/test_model_loading_fragment.glsl");
@@ -87,11 +82,6 @@ namespace LearnOpenGL
         m_shader->SetUniform("u_model", model);
         m_shader->SetUniform("u_normal", normal);
 
-        std::vector<Texture *> textures = {
-            m_diffuse,
-            m_specular
-        };
-
-        m_mesh = new Mesh(verticies, indicies, textures);
+        m_model = new Model("projects/LearnOpenGL/resources/models/backpack/backpack.obj");
     }
 }

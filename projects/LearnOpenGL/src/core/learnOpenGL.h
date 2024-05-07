@@ -17,3 +17,4 @@
 #include "../debug/glcall.h"
 #include "../systems/camera.h"
 #include "mesh.h"
+#include "model.h"

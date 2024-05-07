@@ -16,8 +16,7 @@ namespace LearnOpenGL
         private:
         Application *m_app;
         Shader *m_shader;
-        Texture *m_diffuse, *m_specular;
-        Mesh *m_mesh;
+        Model *m_model;
         Camera3D *m_camera;
 
         private:

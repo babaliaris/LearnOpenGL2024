@@ -26,6 +26,7 @@ namespace LearnOpenGL
 
         m_modelName = path.substr(path.find_last_of("/"), path.size());
 
+        VAMP_INFO("[Model] Loading: %s", path.c_str());
         this->processNode(scene->mRootNode, scene);
 
         if (m_noTextCoordsFound)
@@ -162,8 +163,7 @@ namespace LearnOpenGL
 
             mat->GetTexture(type, i, &str);
 
-            TextureTypeE texType    = type == aiTextureType::aiTextureType_DIFFUSE ? TextureTypeE::DIFFUSE : TextureTypeE::NONE;
-            texType                 = type == aiTextureType::aiTextureType_SPECULAR ? TextureTypeE::SPECULAR : TextureTypeE::NONE;
+            TextureTypeE texType    = (type == aiTextureType_DIFFUSE ? TextureTypeE::DIFFUSE : TextureTypeE::SPECULAR);
 
             full_path << m_directory << "/" << str.C_Str();
 
