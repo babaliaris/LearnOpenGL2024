@@ -59,8 +59,6 @@ namespace LearnOpenGL
 
     void Camera3D::simulateFPS()
     {
-            glfwSetInputMode(m_app->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
             glfwSetWindowUserPointer(m_app->getWindow()->getGlfwWindow(), this);
 
             glfwSetCursorPosCallback(m_app->getWindow()->getGlfwWindow(), glfwCursorPosCallback);

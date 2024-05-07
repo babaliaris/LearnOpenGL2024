@@ -8,6 +8,7 @@
 #include "layers/colors.h"
 #include "layers/lighting_maps.h"
 #include "layers/light_casters.h"
+#include "layers/test_model_loading.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -16,6 +17,7 @@
 #define COLORS "COLORS"
 #define LIGHTING_MAPS "LIGHTING_MAPS"
 #define LIGHT_CASTERS "LIGHT_CASTERS"
+#define TEST_MODEL_LOADING "TEST_MODEL_LOADING"
 
 
 int main(void)
@@ -27,7 +29,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = LIGHT_CASTERS;
+    std::string loadingLayer = TEST_MODEL_LOADING;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -73,6 +75,13 @@ int main(void)
         app->appendLayer(new_layer);
     }
 
+    else if (loadingLayer == TEST_MODEL_LOADING)
+    {
+        LearnOpenGL::TestModelLoading *new_layer = new LearnOpenGL::TestModelLoading(app);
+        app->appendLayer(new_layer);
+    }
+
+    //glfwSetInputMode(app->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     app->Run();
 
     delete app;

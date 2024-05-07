@@ -34,7 +34,8 @@ GLenum GetTextureFormat(int channels)
 
 
 LearnOpenGL::Texture::Texture(const std::string &filepath)
-: m_id(0), m_filepath(filepath), m_width(0), m_height(0), m_channels(0)
+: m_id(0), m_filepath(filepath), m_width(0), m_height(0), m_channels(0),
+m_type(TextureTypeE::NONE)
 {
     glCALL(glGenTextures(1, &m_id));
     glCALL(glBindTexture(GL_TEXTURE_2D, m_id));
