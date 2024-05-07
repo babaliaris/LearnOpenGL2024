@@ -9,6 +9,7 @@
 #include "layers/lighting_maps.h"
 #include "layers/light_casters.h"
 #include "layers/test_model_loading.h"
+#include "layers/model_full_phong.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -18,6 +19,7 @@
 #define LIGHTING_MAPS "LIGHTING_MAPS"
 #define LIGHT_CASTERS "LIGHT_CASTERS"
 #define TEST_MODEL_LOADING "TEST_MODEL_LOADING"
+#define MODEL_FULL_PHONG "MODEL_FULL_PHONG"
 
 
 int main(void)
@@ -29,7 +31,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = TEST_MODEL_LOADING;
+    std::string loadingLayer = MODEL_FULL_PHONG;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -81,7 +83,13 @@ int main(void)
         app->appendLayer(new_layer);
     }
 
-    //glfwSetInputMode(app->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    else if (loadingLayer == MODEL_FULL_PHONG)
+    {
+        LearnOpenGL::ModelFullPhong *new_layer = new LearnOpenGL::ModelFullPhong(app);
+        app->appendLayer(new_layer);
+    }
+
+    glfwSetInputMode(app->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     app->Run();
 
     delete app;
