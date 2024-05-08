@@ -59,6 +59,53 @@ m_type(TextureTypeE::NONE)
     glCALL(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
+LearnOpenGL::Texture::Texture(TextureTypeE type, int width, int height)
+{
+    glCALL(glGenTextures(1, &m_id));
+    glCALL(glBindTexture(GL_TEXTURE_2D, m_id));
+
+    glCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    glCALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+    switch (type)
+    {
+        case TextureTypeE::COLOR_RGB:
+        {
+            glCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+            break;
+        }
+
+        case TextureTypeE::COLOR_RGBA:
+        {
+            glCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
+            break;
+        }
+
+        case TextureTypeE::DEPTH:
+        {
+            glCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL));
+            break;
+        }
+
+        case TextureTypeE::STENCIL:
+        {
+            glCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX8, width, height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, NULL));
+            break;
+        }
+
+        case TextureTypeE::DEPTH_STENCIL:
+        {
+            glCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL));
+            break;
+        }
+    
+    default:
+        break;
+    }
+
+    glCALL(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
 LearnOpenGL::Texture::~Texture()
 {
     glCALL(glDeleteTextures(1, &m_id));
@@ -73,6 +120,7 @@ void LearnOpenGL::Texture::Bind(unsigned int unit)
 }
 
 void LearnOpenGL::Texture::UnBind()
-{
+{   
+    glCALL(glActiveTexture(GL_TEXTURE0));
     glCALL(glBindTexture(GL_TEXTURE_2D, 0));
 }

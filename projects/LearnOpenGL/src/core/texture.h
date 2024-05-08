@@ -5,7 +5,8 @@ namespace LearnOpenGL
 {
     enum TextureTypeE
     {
-        NONE, DIFFUSE, SPECULAR
+        NONE, DIFFUSE, SPECULAR, COLOR_RGB,
+        COLOR_RGBA, DEPTH, STENCIL, DEPTH_STENCIL
     };
 
 
@@ -13,6 +14,7 @@ namespace LearnOpenGL
     {
         public:
         Texture(const std::string &filepath);
+        Texture(TextureTypeE type, int width, int height);
         ~Texture();
 
         void Bind(unsigned int unit = 0);
@@ -23,6 +25,7 @@ namespace LearnOpenGL
         inline int GetWidth() {return m_width;}
         inline int GetHeight() {return m_height;}
         inline int GetChannels() {return m_channels;}
+        inline unsigned int getId() const {return m_id;}
         inline const std::string &GetFilepath(){return m_filepath;}
         inline TextureTypeE getType() const {return m_type;}
 
