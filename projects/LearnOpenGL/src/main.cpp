@@ -13,6 +13,7 @@
 #include "layers/stencil_buffer.h"
 #include "layers/blending.h"
 #include "layers/face_culling.h"
+#include "layers/post_processing.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -26,6 +27,7 @@
 #define STENCIL_BUFFER "STENCIL_BUFFER"
 #define BLENDING "BLENDING"
 #define FACE_CULLING "FACE_CULLING"
+#define POST_PROCESSING "POST_PROCESSING"
 
 
 int main(void)
@@ -37,7 +39,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = FACE_CULLING;
+    std::string loadingLayer = POST_PROCESSING;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -110,6 +112,12 @@ int main(void)
     else if (loadingLayer == FACE_CULLING)
     {
         LearnOpenGL::FaceCulling *new_layer = new LearnOpenGL::FaceCulling(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == POST_PROCESSING)
+    {
+        LearnOpenGL::PostProcessing *new_layer = new LearnOpenGL::PostProcessing(app);
         app->appendLayer(new_layer);
     }
 
