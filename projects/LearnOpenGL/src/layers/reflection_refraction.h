@@ -44,7 +44,7 @@ namespace LearnOpenGL
         unsigned int m_vaoCube, m_vboCube;
         unsigned int m_vaoSkybox, m_vboSkybox;
         Application *m_app;
-        Shader *m_shader, *m_shaderSkybox;
+        Shader *m_shader, *m_shaderSkybox, *m_shaderReflectRefract;
         Camera3D *m_camera;
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
@@ -58,5 +58,6 @@ namespace LearnOpenGL
         void PrepareSkyboxData();
         void RenderCube();
         void RenderSkybox();
+        void RenderReflectRefractCube(const glm::mat4 model, const glm::mat4 &proj, int mode);
     };
 }

@@ -32,6 +32,7 @@ namespace LearnOpenGL
         delete m_cubeDiffuse;
         delete m_cubeSpecular;
         delete m_skyBox;
+        delete m_shaderReflectRefract;
 
     }
 
@@ -45,6 +46,9 @@ namespace LearnOpenGL
 
         m_shaderSkybox = new Shader("projects/LearnOpenGL/src/shaders/skybox_vertex.glsl",
         "projects/LearnOpenGL/src/shaders/skybox_fragment.glsl");
+
+        m_shaderReflectRefract = new Shader("projects/LearnOpenGL/src/shaders/reflection_refraction_vertex.glsl",
+        "projects/LearnOpenGL/src/shaders/reflection_refraction_fragment.glsl");
 
         m_skyBox = new CubeMap({
             "projects/LearnOpenGL/resources/skybox/right.jpg",  //Right
@@ -99,6 +103,12 @@ namespace LearnOpenGL
             m_shader->SetUniform("u_normal", glm::transpose(glm::inverse(model)));
             this->RenderCube();
         }
+
+        //Draw the Reflective/Refractive object.
+        glm::mat4 reflectRefractModel = glm::mat4(1.0f);
+        reflectRefractModel = glm::translate(reflectRefractModel, glm::vec3(0.0f, 4.0f, -20.0f));
+        this->RenderReflectRefractCube(reflectRefractModel, proj, 0); //0=reflect, 1=refract
+
         //------------------------------------Draw The Scene------------------------------------//
 
 
@@ -332,5 +342,29 @@ namespace LearnOpenGL
         glCALL(glBindVertexArray(0));
         m_skyBox->UnBind();
         m_shaderSkybox->Unbind();
+    }
+
+    void ReflectionRefraction::RenderReflectRefractCube(const glm::mat4 model,
+                                                        const glm::mat4 &proj, int mode)
+    {
+        //Bind the skybox texture.
+        m_skyBox->Bind(0);
+
+        //Set the required uniforms.
+        m_shaderReflectRefract->SetUniform("u_model", model);
+        m_shaderReflectRefract->SetUniform("u_view", m_camera->getView());
+        m_shaderReflectRefract->SetUniform("u_proj", proj);
+        m_shaderReflectRefract->SetUniform("u_normal", glm::transpose(glm::inverse(model)));
+        m_shaderReflectRefract->SetUniform("u_mode", mode);
+        m_shaderReflectRefract->SetUniform("u_camPos", m_camera->getPosition());
+        m_shaderReflectRefract->SetUniform("u_skyboxTexture", 0);
+
+        m_shaderReflectRefract->Bind();
+        glCALL(glBindVertexArray(m_vaoCube));
+        glCALL(glDrawArrays(GL_TRIANGLES, 0, 36));
+
+        glCALL(glBindVertexArray(0));
+        m_shaderReflectRefract->Unbind();
+        m_skyBox->UnBind();
     }
 }
