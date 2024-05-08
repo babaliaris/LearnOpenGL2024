@@ -87,24 +87,6 @@ namespace LearnOpenGL
         app->getWindow()->getWidth() / (float)app->getWindow()->getHeight(), 0.1f, 100.0f);
 
 
-        //Disable depth test before drawing the skybox because
-        //remember that you are inside the cube.
-        glCALL(glDisable(GL_DEPTH_TEST));
-
-        //Disable face culling because you are INSIDE the skybox and you
-        //want the back triangle to be rendered!
-        glCALL(glDisable(GL_CULL_FACE));
-
-        //Redner the Skybox before anything else!!!
-        m_shaderSkybox->SetUniform("u_view", glm::mat4(glm::mat3(m_camera->getView())) ); //Get rid off the translation in the view matrix.
-        m_shaderSkybox->SetUniform("u_proj", proj);
-        this->RenderSkybox();
-
-        //Re-enable depth test and face culling.
-        glCALL(glEnable(GL_DEPTH_TEST));
-        glCALL(glEnable(GL_CULL_FACE));
-
-
         //------------------------------------Draw The Scene------------------------------------//
         m_shader->SetUniform("u_proj", proj);
 
@@ -153,6 +135,30 @@ namespace LearnOpenGL
             this->RenderPlane(false);
         }
         //------------------------------------Draw The Scene------------------------------------//
+
+
+
+        //Change depth function to <= so that the skybox depth = 1 pixels
+        //gets override even if a scece pixes has a depth of 1.
+        glCALL(glDepthFunc(GL_LEQUAL));
+
+        //Disable face culling because you are INSIDE the skybox and you
+        //want the back triangles to be rendered!
+        glCALL(glDisable(GL_CULL_FACE));
+
+        //Render the Skybox before anything else!!!
+        //DO NOT forget to change the m_Position.z = w, so that perspective division is always z/w = w/w = 1 for the skybox!!!
+        //EARLY DEPTH TESTING runs automatically if the frag shader DOES NOT CHANGE THE DEPTH VALUES OR MESSES WITH THE DEPTH
+        //BUFFER IN ANY WAY. SO, WHEN THE EARLY DEPTH TEST RUNS (BEFORE THE SKYBOX FRAG SHADER) THE DEPTH BUFFER WILL BE FIELD
+        //WITH 1s WHEREVER THERE IS NO OTHER FRAGMENT IN FRON OF THE SKYBOX.
+        //AFTER THE SKYBOX FRAG SHADER HAS RUN, THE DEPTH BUFFER RUNS AGAIN, AND WE NEED TO ALLOW ALL THE SKYBOX FRAGMENTS TO 
+        //PASS THE TEST BY GL_LEQUAL TO 1 SINCE, THE EARLY DEPTH TESTIN HAS FIELD THE BUFFER WITH 1s FOR THE SKYBOX.
+        m_shaderSkybox->SetUniform("u_view", glm::mat4(glm::mat3(m_camera->getView())) ); //Get rid off the translation in the view matrix.
+        m_shaderSkybox->SetUniform("u_proj", proj);
+        this->RenderSkybox();
+
+        glCALL(glDepthFunc(GL_LESS)); //Restore Depth Function.
+        glCALL(glEnable(GL_CULL_FACE)); //Re-enable face culling.
 
 
     }
