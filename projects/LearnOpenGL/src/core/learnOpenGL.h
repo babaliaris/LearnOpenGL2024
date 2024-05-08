@@ -18,3 +18,5 @@
 #include "../systems/camera.h"
 #include "mesh.h"
 #include "model.h"
+#include "render_buffer.h"
+#include "framebuffer.h"

@@ -43,8 +43,10 @@ namespace LearnOpenGL
         private:
         unsigned int m_vaoCube, m_vboCube;
         unsigned int m_vaoPlane, m_vboPlane;
+        unsigned int m_vaoPostProcess, m_vboPostProcess;
         Application *m_app;
-        Shader *m_shader;
+        FrameBuffer *m_framebuffer;
+        Shader *m_shader, *m_postProcessShader;
         Camera3D *m_camera;
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
@@ -58,6 +60,7 @@ namespace LearnOpenGL
         private:
         void PrepareCubeData();
         void PreparePlaneData();
+        void PreparePostProcessData();
         void RenderCube();
         void RenderPlane(bool isGrass);
     };

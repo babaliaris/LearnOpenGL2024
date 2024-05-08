@@ -44,6 +44,7 @@ namespace LearnOpenGL
 
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depth_stencil_buffer->getId()));
+                break;
             }
 
             case FrameBuffer::TypeE::COLOR_RGBA_TEXTURE:
@@ -53,6 +54,7 @@ namespace LearnOpenGL
 
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depth_stencil_buffer->getId()));
+                break;
             }
 
             case FrameBuffer::TypeE::COLOR_RGB_DEPTH_TEXTURE:
@@ -64,6 +66,7 @@ namespace LearnOpenGL
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_color_buffer->getId()));
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_stencil_buffer->getId()));
+                break;
             }
 
 
@@ -76,6 +79,7 @@ namespace LearnOpenGL
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, m_color_buffer->getId()));
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_stencil_buffer->getId()));
+                break;
             }
 
 
@@ -88,6 +92,7 @@ namespace LearnOpenGL
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_texture->getId(), 0));
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_stencil_buffer->getId()));
+                break;
             }
 
 
@@ -100,6 +105,7 @@ namespace LearnOpenGL
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_color_texture->getId(), 0));
                 glCALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth_texture->getId(), 0));
                 glCALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_stencil_buffer->getId()));
+                break;
             }
             
             default:
@@ -107,6 +113,12 @@ namespace LearnOpenGL
                 VAMP_ERROR("[FrameBuffer] Uknown FrameBufferTypeE.");
                 break;
             }
+        }
+
+        
+        if (GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            VAMP_ERROR("[Framebuffer] Framebuffer completement error: %d", error);
         }
 
         glCALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));

@@ -6,7 +6,7 @@ namespace LearnOpenGL
     PostProcessing::PostProcessing(Application *app)
     : Layer("ModelFullPhong", app), m_vaoCube(0), m_vboCube(0),
         m_vaoPlane(0), m_vboPlane(0),
-        m_app(app)
+        m_app(app), m_framebuffer(nullptr)
     {
         m_directionalLight.direction    = glm::vec3(0.0f, -6.0f, -1.0f);
         m_directionalLight.diffuse      = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -32,6 +32,8 @@ namespace LearnOpenGL
         delete m_shader;
         delete m_cubeDiffuse;
         delete m_cubeSpecular;
+        delete m_framebuffer;
+        delete m_postProcessShader;
 
     }
 
@@ -42,6 +44,13 @@ namespace LearnOpenGL
 
         this->PrepareCubeData();
         this->PreparePlaneData();
+        this->PreparePostProcessData();
+
+        m_framebuffer = new FrameBuffer(FrameBuffer::TypeE::COLOR_RGB_TEXTURE, m_app->getWindow()->getWidth(),
+        m_app->getWindow()->getHeight());
+
+        m_postProcessShader = new Shader("projects/LearnOpenGL/src/shaders/post_processing_vertex.glsl",
+        "projects/LearnOpenGL/src/shaders/post_processing_fragment.glsl");
 
         m_cubePositions = {
             { 0.0f, 0.8f, -20.0f},
@@ -68,7 +77,15 @@ namespace LearnOpenGL
 
     void PostProcessing::onUpdate(Application *app)
     {
+
+        //Bind the framebuffer so that the next draw calls will draw to it.
+        m_framebuffer->Bind();
+
+        //Clear the current binded framebuffer.
+        glCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
         
+
+        //------------------------------------Draw The Scene------------------------------------//
         m_shader->SetUniform("u_proj", glm::perspective(glm::radians(45.0f), 
         app->getWindow()->getWidth() / (float)app->getWindow()->getHeight(), 0.1f, 100.0f));
 
@@ -116,6 +133,25 @@ namespace LearnOpenGL
             m_shader->SetUniform("u_normal", glm::transpose(glm::inverse(model)));
             this->RenderPlane(false);
         }
+        //------------------------------------Draw The Scene------------------------------------//
+
+
+        //Unbind the buffer to return back to the default famebuffer.
+        m_framebuffer->UnBind();
+        glCALL(glDisable(GL_DEPTH_TEST)); //Disable depth test.
+
+        //Draw the QUAD with the scene texture from the previous framebuffer.
+        glCALL(glBindVertexArray(m_vaoPostProcess));
+        m_framebuffer->getColorTexture()->Bind(0);
+        m_postProcessShader->SetUniform("u_sceneTexture", 0);
+        m_postProcessShader->Bind();
+        glCALL(glDrawArrays(GL_TRIANGLES, 0, 6));
+        m_postProcessShader->Unbind();
+        m_framebuffer->getColorTexture()->UnBind();
+        glCALL(glBindVertexArray(0));
+
+        glCALL(glEnable(GL_DEPTH_TEST)); //Enable depth test.
+
 
     }
 
@@ -263,6 +299,39 @@ namespace LearnOpenGL
 
         m_windowTexture = new LearnOpenGL::Texture("projects/LearnOpenGL/resources/window.png");
         m_grassTexture  = new LearnOpenGL::Texture("projects/LearnOpenGL/resources/grass.png");
+    }
+
+
+    void PostProcessing::PreparePostProcessData()
+    {
+        float vertices[] = {
+            // positions    // texture coords
+           -1.0f, -1.0f,    0.0f, 0.0f,
+            1.0f, -1.0f,    1.0f, 0.0f,
+            1.0f,  1.0f,    1.0f, 1.0f,
+
+           -1.0f, -1.0f,    0.0f, 0.0f,
+            1.0f,  1.0f,    1.0f, 1.0f,
+           -1.0f,  1.0f,    0.0f, 1.0f
+        };
+
+        //-----------------------------------Object Draw Call Preperation-----------------------------------//
+        glCALL(glGenVertexArrays(1, &m_vaoPostProcess));
+        glCALL(glBindVertexArray(m_vaoPostProcess));
+
+        glCALL(glGenBuffers(1, &m_vboPostProcess));
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vboPostProcess));
+        glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+
+        glCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void *)0));
+        glCALL(glEnableVertexAttribArray(0));
+
+        glCALL(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (const void *)(sizeof(float) * 2)));
+        glCALL(glEnableVertexAttribArray(1));
+
+        glCALL(glBindVertexArray(0));
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        //-----------------------------------Object Draw Call Preperation-----------------------------------//
     }
 
 

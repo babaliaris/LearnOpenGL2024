@@ -75,6 +75,7 @@ namespace LearnOpenGL
     void Window::setClearColor(float r, float g, float b, float a)
     {
         glCALL(glClearColor(r, g, b, a));
+        m_clearColor = glm::vec4(r, g, b, a);
     }
 }
 

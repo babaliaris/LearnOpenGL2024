@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <glm/glm.hpp>
 
 struct GLFWwindow;
 
@@ -21,10 +22,12 @@ namespace LearnOpenGL
         inline int getWidth() const {return m_width;}
         inline int getHeight() const {return m_height;}
         inline GLFWwindow *getGlfwWindow() const {return m_window;}
+        inline glm::vec4 getClearColor() const {return m_clearColor;}
 
         private:
         std::string m_title;
         int m_width, m_height;
         GLFWwindow *m_window;
+        glm::vec4 m_clearColor;
     };
 }
