@@ -20,3 +20,4 @@
 #include "model.h"
 #include "render_buffer.h"
 #include "framebuffer.h"
+#include "cubemap.h"
