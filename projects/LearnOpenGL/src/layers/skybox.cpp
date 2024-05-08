@@ -32,7 +32,7 @@ namespace LearnOpenGL
         delete m_shader;
         delete m_cubeDiffuse;
         delete m_cubeSpecular;
-        delete m_postProcessShader;
+        delete m_skyBox;
 
     }
 
@@ -43,9 +43,19 @@ namespace LearnOpenGL
 
         this->PrepareCubeData();
         this->PreparePlaneData();
+        this->PrepareSkyboxData();
 
-        m_postProcessShader = new Shader("projects/LearnOpenGL/src/shaders/post_processing_vertex.glsl",
-        "projects/LearnOpenGL/src/shaders/post_processing_fragment.glsl");
+        m_shaderSkybox = new Shader("projects/LearnOpenGL/src/shaders/skybox_vertex.glsl",
+        "projects/LearnOpenGL/src/shaders/skybox_fragment.glsl");
+
+        m_skyBox = new CubeMap({
+            "projects/LearnOpenGL/resources/skybox/right.jpg",  //Right
+            "projects/LearnOpenGL/resources/skybox/left.jpg",   //Left
+            "projects/LearnOpenGL/resources/skybox/top.jpg",    //Top
+            "projects/LearnOpenGL/resources/skybox/bottom.jpg", //Bottom
+            "projects/LearnOpenGL/resources/skybox/front.jpg",  //Front
+            "projects/LearnOpenGL/resources/skybox/back.jpg",   //Back
+        });
 
         m_cubePositions = {
             { 0.0f, 0.8f, -20.0f},
@@ -72,9 +82,31 @@ namespace LearnOpenGL
 
     void Skybox::onUpdate(Application *app)
     {
+        //Create the projection matrix.
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), 
+        app->getWindow()->getWidth() / (float)app->getWindow()->getHeight(), 0.1f, 100.0f);
+
+
+        //Disable depth test before drawing the skybox because
+        //remember that you are inside the cube.
+        glCALL(glDisable(GL_DEPTH_TEST));
+
+        //Disable face culling because you are INSIDE the skybox and you
+        //want the back triangle to be rendered!
+        glCALL(glDisable(GL_CULL_FACE));
+
+        //Redner the Skybox before anything else!!!
+        m_shaderSkybox->SetUniform("u_view", glm::mat4(glm::mat3(m_camera->getView())) ); //Get rid off the translation in the view matrix.
+        m_shaderSkybox->SetUniform("u_proj", proj);
+        this->RenderSkybox();
+
+        //Re-enable depth test and face culling.
+        glCALL(glEnable(GL_DEPTH_TEST));
+        glCALL(glEnable(GL_CULL_FACE));
+
+
         //------------------------------------Draw The Scene------------------------------------//
-        m_shader->SetUniform("u_proj", glm::perspective(glm::radians(45.0f), 
-        app->getWindow()->getWidth() / (float)app->getWindow()->getHeight(), 0.1f, 100.0f));
+        m_shader->SetUniform("u_proj", proj);
 
         m_shader->SetUniform("u_view", m_camera->getView());
 
@@ -272,6 +304,73 @@ namespace LearnOpenGL
     }
 
 
+    void Skybox::PrepareSkyboxData()
+    {
+        float vertices[] = {
+            // positions
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f
+        };
+
+
+        //-----------------------------------Object Draw Call Preperation-----------------------------------//
+        glCALL(glGenVertexArrays(1, &m_vaoSkybox));
+        glCALL(glBindVertexArray(m_vaoSkybox));
+
+        glCALL(glGenBuffers(1, &m_vboSkybox));
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vboSkybox));
+        glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+
+        glCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void *)0));
+        glCALL(glEnableVertexAttribArray(0));
+
+        glCALL(glBindVertexArray(0));
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        //-----------------------------------Object Draw Call Preperation-----------------------------------//
+
+
+    }
+
+
     void Skybox::RenderCube()
     {
         glCALL(glBindVertexArray(m_vaoCube));
@@ -313,5 +412,20 @@ namespace LearnOpenGL
         glCALL(glBindVertexArray(0));
         m_grassTexture->UnBind();
         m_windowTexture->UnBind();
+    }
+
+
+    void Skybox::RenderSkybox()
+    {
+        glCALL(glBindVertexArray(m_vaoSkybox));
+        m_skyBox->Bind(0);
+        m_shaderSkybox->SetUniform("u_skyboxTexture", 0);
+
+        m_shaderSkybox->Bind();
+        glCALL(glDrawArrays(GL_TRIANGLES, 0, 36));
+
+        glCALL(glBindVertexArray(0));
+        m_skyBox->UnBind();
+        m_shaderSkybox->Unbind();
     }
 }

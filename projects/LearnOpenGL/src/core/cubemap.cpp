@@ -33,7 +33,7 @@ static GLenum GetTextureFormat(int channels)
 }
 
 
-LearnOpenGL::CubeMap::CubeMap(const std::vector<std::string> &paths)
+LearnOpenGL::CubeMap::CubeMap(const std::vector<std::string> &paths, bool flipImages)
 : m_id(0), m_filepaths(paths), m_width(0), m_height(0), m_channels(0)
 {
     if (paths.size() != 6)
@@ -56,7 +56,7 @@ LearnOpenGL::CubeMap::CubeMap(const std::vector<std::string> &paths)
     for (unsigned int i = 0; i < paths.size(); i++)
     {
 
-        stbi_set_flip_vertically_on_load(true);
+        stbi_set_flip_vertically_on_load(flipImages);
         unsigned char *data = stbi_load(paths[i].c_str(), &m_width, &m_height, &m_channels, 0);
 
         if (i > 0 && (width != m_width || height != m_height || channels != m_channels))

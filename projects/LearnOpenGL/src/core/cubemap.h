@@ -7,7 +7,7 @@ namespace LearnOpenGL
     class CubeMap
     {
         public:
-        CubeMap(const std::vector<std::string> &paths);
+        CubeMap(const std::vector<std::string> &paths, bool flipImages = false);
         ~CubeMap();
 
         void Bind(unsigned int unit = 0);

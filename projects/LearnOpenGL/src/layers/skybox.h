@@ -43,9 +43,9 @@ namespace LearnOpenGL
         private:
         unsigned int m_vaoCube, m_vboCube;
         unsigned int m_vaoPlane, m_vboPlane;
-        unsigned int m_vaoPostProcess, m_vboPostProcess;
+        unsigned int m_vaoSkybox, m_vboSkybox;
         Application *m_app;
-        Shader *m_shader, *m_postProcessShader;
+        Shader *m_shader, *m_shaderSkybox;
         Camera3D *m_camera;
         DirectionalLight m_directionalLight;
         PointLight m_pointLight;
@@ -55,11 +55,14 @@ namespace LearnOpenGL
         std::vector<glm::vec3> m_cubePositions;
         std::vector<glm::vec3> m_grassPositions;
         std::vector<glm::vec3> m_windowPositions;
+        CubeMap *m_skyBox;
 
         private:
         void PrepareCubeData();
         void PreparePlaneData();
+        void PrepareSkyboxData();
         void RenderCube();
         void RenderPlane(bool isGrass);
+        void RenderSkybox();
     };
 }
