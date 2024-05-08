@@ -14,6 +14,7 @@
 #include "layers/blending.h"
 #include "layers/face_culling.h"
 #include "layers/post_processing.h"
+#include "layers/skybox.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -28,6 +29,7 @@
 #define BLENDING "BLENDING"
 #define FACE_CULLING "FACE_CULLING"
 #define POST_PROCESSING "POST_PROCESSING"
+#define SKYBOX "SKYBOX"
 
 
 int main(void)
@@ -39,7 +41,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = POST_PROCESSING;
+    std::string loadingLayer = SKYBOX;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -118,6 +120,12 @@ int main(void)
     else if (loadingLayer == POST_PROCESSING)
     {
         LearnOpenGL::PostProcessing *new_layer = new LearnOpenGL::PostProcessing(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == SKYBOX)
+    {
+        LearnOpenGL::Skybox *new_layer = new LearnOpenGL::Skybox(app);
         app->appendLayer(new_layer);
     }
 
