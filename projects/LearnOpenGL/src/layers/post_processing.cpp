@@ -136,6 +136,7 @@ namespace LearnOpenGL
         //------------------------------------Draw The Scene------------------------------------//
 
 
+        //-------------------------Draw The Texture Scene In A Quad-----------------------------//
         //Unbind the buffer to return back to the default famebuffer.
         m_framebuffer->UnBind();
         glCALL(glDisable(GL_DEPTH_TEST)); //Disable depth test.
@@ -144,6 +145,15 @@ namespace LearnOpenGL
         glCALL(glBindVertexArray(m_vaoPostProcess));
         m_framebuffer->getColorTexture()->Bind(0);
         m_postProcessShader->SetUniform("u_sceneTexture", 0);
+
+        //0 = No effect.
+        //1 = Inverse colors.
+        //2 = Grayscale.
+        //3 = Sharpen Kernel.
+        //4 = Blur Kernel
+        //5 = Edge Detection Kernel
+        m_postProcessShader->SetUniform("u_effect", 5);
+
         m_postProcessShader->Bind();
         glCALL(glDrawArrays(GL_TRIANGLES, 0, 6));
         m_postProcessShader->Unbind();
@@ -151,6 +161,7 @@ namespace LearnOpenGL
         glCALL(glBindVertexArray(0));
 
         glCALL(glEnable(GL_DEPTH_TEST)); //Enable depth test.
+        //-------------------------Draw The Texture Scene In A Quad-----------------------------//
 
 
     }
