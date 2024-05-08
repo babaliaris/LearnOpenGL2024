@@ -15,6 +15,7 @@
 #include "layers/face_culling.h"
 #include "layers/post_processing.h"
 #include "layers/skybox.h"
+#include "layers/reflection_refraction.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -30,6 +31,7 @@
 #define FACE_CULLING "FACE_CULLING"
 #define POST_PROCESSING "POST_PROCESSING"
 #define SKYBOX "SKYBOX"
+#define REFLECTION_REFRACTION "REFLECTION_REFRACTION"
 
 
 int main(void)
@@ -41,7 +43,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = SKYBOX;
+    std::string loadingLayer = REFLECTION_REFRACTION;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -126,6 +128,12 @@ int main(void)
     else if (loadingLayer == SKYBOX)
     {
         LearnOpenGL::Skybox *new_layer = new LearnOpenGL::Skybox(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == REFLECTION_REFRACTION)
+    {
+        LearnOpenGL::ReflectionRefraction *new_layer = new LearnOpenGL::ReflectionRefraction(app);
         app->appendLayer(new_layer);
     }
 
