@@ -2,17 +2,18 @@
 
 namespace LearnOpenGL
 {
-    enum RenderBufferTypeE
-    {
-        NONE, DEPTH, STENCIL, 
-        DEPTH_STENCIL, COLOR
-    };
-
 
     class RenderBuffer
     {
         public:
-        RenderBuffer(RenderBufferTypeE type, int width, int height);
+        enum TypeE
+        {
+            NONE, DEPTH, STENCIL, 
+            DEPTH_STENCIL, COLOR_RGB, COLOR_RGBA
+        };
+
+        public:
+        RenderBuffer(TypeE type, int width, int height);
         ~RenderBuffer();
 
         void Bind();
