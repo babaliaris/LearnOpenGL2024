@@ -121,7 +121,6 @@ namespace LearnOpenGL
         //want the back triangles to be rendered!
         glCALL(glDisable(GL_CULL_FACE));
 
-        //Render the Skybox before anything else!!!
         //DO NOT forget to change the m_Position.z = w, so that perspective division is always z/w = w/w = 1 for the skybox!!!
         //EARLY DEPTH TESTING runs automatically if the frag shader DOES NOT CHANGE THE DEPTH VALUES OR MESSES WITH THE DEPTH
         //BUFFER IN ANY WAY. SO, WHEN THE EARLY DEPTH TEST RUNS (BEFORE THE SKYBOX FRAG SHADER) THE DEPTH BUFFER WILL BE FIELD
