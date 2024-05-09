@@ -1,7 +1,7 @@
 -- -------------------------------Compile Assimp------------------------------- --
 function CompileAssimp()
     print("Compiling ASSIMP...")
-    os.execute("cd submodules/assimp && mkdir -p build && cd build && cmake .. -DBUILD_SHARED_LIBS=off && make -j4")
+    os.execute("cd submodules/assimp && mkdir -p build && cd build && cmake .. -DBUILD_SHARED_LIBS=off -DASSIMP_BUILD_ZLIB=on && make -j4")
 end
 CompileAssimp()
 -- -------------------------------Compile Assimp------------------------------- --

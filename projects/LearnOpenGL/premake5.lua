@@ -17,18 +17,21 @@ project "LearnOpenGL"
         "%{_WORKING_DIR}/submodules/glm",
         "%{_WORKING_DIR}/projects/GLAD/src/include",
         "%{_WORKING_DIR}/projects/VampLogger/src/include",
-        "%{_WORKING_DIR}/submodules/assimp/include"
+        "%{_WORKING_DIR}/submodules/assimp/include",
+        "%{_WORKING_DIR}/submodules/assimp/build/include"
     }
 
     libdirs {
-        "submodules/assimp/build/lib/"
+        "%{_WORKING_DIR}/submodules/assimp/build/lib/",
+        "%{_WORKING_DIR}/submodules/assimp/build/contrib/zlib/"
     }
 
     -- All configurations for LINUX.
     filter "system:linux"
         links {"GL", "X11", "pthread",
             "Xrandr", "Xi", "ldl", "GLFW",
-            "GLAD", "VampLogger", "assimp"
+            "GLAD", "VampLogger", "assimp",
+            "zlibstatic" -- Required by ASSIMP
         }
 
 
