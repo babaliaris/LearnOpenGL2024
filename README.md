@@ -1,4 +1,5 @@
 # LearnOpenGL 2024
+## LINUX ONLY
 
 ## Cloning
 ```
