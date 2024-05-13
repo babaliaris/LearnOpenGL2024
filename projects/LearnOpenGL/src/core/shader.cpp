@@ -56,14 +56,16 @@ unsigned int LearnOpenGL::Shader::CompileShader(const std::string &source, GLenu
 
 
 
-unsigned int LearnOpenGL::Shader::CreateProgram(const std::string &vertex_source, const std::string &fragment_source)
+unsigned int LearnOpenGL::Shader::CreateProgram(const std::string &vertex_source, const std::string &geometry_source, const std::string &fragment_source)
 {
     glCALL(unsigned int program = glCreateProgram());
 
     glCALL(unsigned int vertex   = CompileShader(vertex_source, GL_VERTEX_SHADER));
+    glCALL(unsigned int geometry = (geometry_source != "" ? CompileShader(geometry_source, GL_GEOMETRY_SHADER) : 0));
     glCALL(unsigned int fragment = CompileShader(fragment_source, GL_FRAGMENT_SHADER));
 
     glCALL(glAttachShader(program, vertex));
+    glCALL(if (geometry > 0) glAttachShader(program, geometry));
     glCALL(glAttachShader(program, fragment));
 
     int success, info_length;
@@ -93,6 +95,7 @@ unsigned int LearnOpenGL::Shader::CreateProgram(const std::string &vertex_source
 
     glCALL(glDeleteShader(vertex));
     glCALL(glDeleteShader(fragment));
+    glCALL(glDeleteShader(geometry));
 
     return program;
 }
@@ -124,7 +127,7 @@ LearnOpenGL::Shader::Shader(const char *vertex_file, const char *fragment_file)
     std::string vertex_source = LoadSourceFromFile(vertex_file);
     std::string fragment_source = LoadSourceFromFile(fragment_file);
 
-    m_id = CreateProgram(vertex_source, fragment_source);
+    m_id = CreateProgram(vertex_source, "", fragment_source);
 }
 
 
@@ -133,7 +136,17 @@ LearnOpenGL::Shader::Shader(const std::string &vertex_file, const std::string &f
     std::string vertex_source = LoadSourceFromFile(vertex_file.c_str());
     std::string fragment_source = LoadSourceFromFile(fragment_file.c_str());
 
-    m_id = CreateProgram(vertex_source, fragment_source);
+    m_id = CreateProgram(vertex_source, "", fragment_source);
+}
+
+
+LearnOpenGL::Shader::Shader(const std::string &vertex_file, const std::string &geometry_file, const std::string &fragment_file)
+{
+    std::string vertex_source   = LoadSourceFromFile(vertex_file.c_str());
+    std::string geometry_source = LoadSourceFromFile(geometry_file.c_str());
+    std::string fragment_source = LoadSourceFromFile(fragment_file.c_str());
+
+    m_id = CreateProgram(vertex_source, geometry_source, fragment_source);
 }
 
 

@@ -9,6 +9,7 @@ namespace LearnOpenGL
         public:
         Shader(const char *vertex_file, const char *fragment_file);
         Shader(const std::string &vertex_file, const std::string &fragment_file);
+        Shader(const std::string &vertex_file, const std::string &geometry_file, const std::string &fragment_file);
         ~Shader();
 
         void Bind();
@@ -27,6 +28,6 @@ namespace LearnOpenGL
         private:
         const char *GetShaderFilename(unsigned int shader_type);
         unsigned int CompileShader(const std::string &source, unsigned int shader_type);
-        unsigned int CreateProgram(const std::string &vertex_source, const std::string &fragment_source);
+        unsigned int CreateProgram(const std::string &vertex_source, const std::string &geometry_source, const std::string &fragment_source);
     };
 }

@@ -20,7 +20,6 @@ namespace LearnOpenGL
     {
         m_camera = new Camera3D(app, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f, 0.0f, -1.0f));
         m_camera->simulateFPS();
-
     }
 
 
