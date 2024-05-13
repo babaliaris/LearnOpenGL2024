@@ -16,6 +16,7 @@
 #include "layers/post_processing.h"
 #include "layers/skybox.h"
 #include "layers/reflection_refraction.h"
+#include "layers/geometry_shader.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -32,6 +33,7 @@
 #define POST_PROCESSING "POST_PROCESSING"
 #define SKYBOX "SKYBOX"
 #define REFLECTION_REFRACTION "REFLECTION_REFRACTION"
+#define GEOMETRY_SHADER "GEOMETRY_SHADER"
 
 
 int main(void)
@@ -43,7 +45,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = REFLECTION_REFRACTION;
+    std::string loadingLayer = GEOMETRY_SHADER;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -134,6 +136,12 @@ int main(void)
     else if (loadingLayer == REFLECTION_REFRACTION)
     {
         LearnOpenGL::ReflectionRefraction *new_layer = new LearnOpenGL::ReflectionRefraction(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == GEOMETRY_SHADER)
+    {
+        LearnOpenGL::GeometryShader *new_layer = new LearnOpenGL::GeometryShader(app);
         app->appendLayer(new_layer);
     }
 
