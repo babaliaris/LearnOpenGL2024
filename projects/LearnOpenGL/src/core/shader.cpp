@@ -228,6 +228,26 @@ void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat4 &mat)
 }
 
 
+void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat4 &mat, unsigned int amount)
+{
+    this->Bind();
+
+    glCALL(int location = glGetUniformLocation(m_id, name));
+
+    if (location == -1)
+    {
+        VAMP_WARN("[Uniform]: %s, was not found.", name);
+    }
+
+    else
+    {
+        glCALL(glUniformMatrix4fv(location, amount, GL_FALSE, glm::value_ptr(mat)));
+    }
+
+    this->Unbind();
+}
+
+
 void LearnOpenGL::Shader::SetUniform(const char *name, const glm::mat3 &mat)
 {
     this->Bind();

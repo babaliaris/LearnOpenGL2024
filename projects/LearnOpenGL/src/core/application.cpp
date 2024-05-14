@@ -91,6 +91,7 @@ namespace LearnOpenGL
     {
         if (glfwGetKey(m_window->m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
+            glfwSetInputMode(this->getWindow()->getGlfwWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             glfwSetWindowShouldClose(m_window->m_window, 1);
         }
     }

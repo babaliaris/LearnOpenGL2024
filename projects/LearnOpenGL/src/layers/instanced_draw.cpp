@@ -4,9 +4,9 @@
 namespace LearnOpenGL
 {
     InstancedDraw::InstancedDraw(Application *app)
-    : Layer("InstancedDraw", app), m_vao(0), m_vbo(0), 
-    m_effect(InstancedDraw::QUADS), m_model(nullptr),
-    m_instancedVBO(0)
+    : Layer("InstancedDraw", app), m_vao(0), m_vbo(0),
+    m_effect(InstancedDraw::ASTEROID), m_planetModel(nullptr),
+    m_asteroidModel(nullptr), m_instancedVBO(0)
     {
     }
 
@@ -14,7 +14,10 @@ namespace LearnOpenGL
     InstancedDraw::~InstancedDraw()
     {
         delete m_shader;
-        if (m_model) delete m_model;
+
+        if (m_planetModel) delete m_planetModel;
+        if (m_asteroidModel) delete m_asteroidModel;
+
         glCALL(glDeleteVertexArrays(1, &m_vao));
         glCALL(glDeleteBuffers(1, &m_vbo));
     }
@@ -23,14 +26,19 @@ namespace LearnOpenGL
     void InstancedDraw::onStart(Application *app)
     {
         m_camera = ((CameraFunctionalityLayer *)this->findLayer("CameraFunctionalityLayer"))->getCamera();
+        m_camera->move(-m_camera->getForward(), 40.0f);
 
         this->prepareData();
+        this->prepareInstanceModels();
 
         std::string vertex_filepath;
         std::string fragment_filepath;
 
         if (m_effect ==  InstancedDraw::ASTEROID)
-            m_model = new Model("projects/LearnOpenGL/resources/models/backpack/backpack.obj");
+        {
+            m_planetModel   = new Model("projects/LearnOpenGL/resources/models/planet/planet.obj");
+            m_asteroidModel = new Model("projects/LearnOpenGL/resources/models/planet/rock.obj");
+        }
 
         switch (m_effect)
         {
@@ -40,8 +48,8 @@ namespace LearnOpenGL
                 break;
             
             default:
-                vertex_filepath     = "projects/LearnOpenGL/src/shaders/geometry_shader/vertex.glsl";
-                fragment_filepath   = "projects/LearnOpenGL/src/shaders/geometry_shader/fragment.glsl";
+                vertex_filepath     = "projects/LearnOpenGL/src/shaders/instanced_rendering/planet_vertex.glsl";
+                fragment_filepath   = "projects/LearnOpenGL/src/shaders/instanced_rendering/planet_fragment.glsl";
                 break;
         }
 
@@ -62,21 +70,20 @@ namespace LearnOpenGL
 
         else
         {
-            m_shader->SetUniform("u_model", glm::mat4(1.0f));
-            m_shader->SetUniform("u_view", m_camera->getView());
-            m_shader->SetUniform("u_proj", glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 100.0f));
-            m_shader->SetUniform("u_normal", glm::mat4(1.0f));
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+            m_shader->SetUniform("u_model",  model);
+            m_shader->SetUniform("u_view",   m_camera->getView());
+            m_shader->SetUniform("u_proj",   glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 100.0f));
 
-            m_shader->SetUniform("u_enableObjectOutline", 0);
-
-            m_shader->SetUniform("u_ambientFactor", 1.0f);
-            m_shader->SetUniform("u_numberOfDirectionalLights", 0);
-            m_shader->SetUniform("u_numberOfPointLights", 0);
-            m_shader->SetUniform("u_numberOfSpotLights", 0);
-
-            m_shader->SetUniform("u_time", (float)glm::radians(glfwGetTime()));
-
-            m_model->Draw(m_shader);
+            m_planetModel->Draw(m_shader);
+            
+            
+            for (unsigned int i = 0; i < ASTEROID_AMOUNT; i++)
+            {
+                m_shader->SetUniform("u_model",  m_modelMatrices[i]);
+                m_asteroidModel->Draw(m_shader);
+            }
         }
     }
 
@@ -124,10 +131,6 @@ namespace LearnOpenGL
         glCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *)0));
         glCALL(glEnableVertexAttribArray(0));
 
-        //Colors.
-        glCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *)(sizeof(float)*2)));
-        glCALL(glEnableVertexAttribArray(1));
-
         //Instanced Translations VBO.
         glCALL(glGenBuffers(1, &m_instancedVBO));
         glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_instancedVBO));
@@ -141,5 +144,41 @@ namespace LearnOpenGL
         //Unbind Everything.
         glCALL(glBindVertexArray(0));
         glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    }
+
+    void InstancedDraw::prepareInstanceModels()
+    {
+        srand(glfwGetTime()); // initialize random seed	
+        float radius = 25.0;
+        float offset = 5.5f;
+
+        for (unsigned int i = 0; i < ASTEROID_AMOUNT; i++)
+        {
+            glm::mat4 model = glm::mat4(1.0f);
+
+            // 1. translation: displace along circle with 'radius' in range [-offset, offset]
+
+            float angle         = (float)i / (float)ASTEROID_AMOUNT * 360.0f;
+            float displacement  = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+            float x             = sin(angle) * radius + displacement;
+
+            displacement    = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+            float y         = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+
+            displacement    = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
+            float z         = cos(angle) * radius + displacement;
+
+            model = glm::translate(model, glm::vec3(x, y, z));
+
+            // 2. scale: scale between 0.05 and 0.25f
+            float scale = (rand() % 20) / 100.0f + 0.05;
+            model       = glm::scale(model, glm::vec3(scale));
+
+            // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+            float rotAngle  = (rand() % 360);
+            model           = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+            m_modelMatrices[i] = model;
+        }
     }
 }
