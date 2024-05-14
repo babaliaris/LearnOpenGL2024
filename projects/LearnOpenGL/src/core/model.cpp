@@ -1,16 +1,18 @@
 #include "model.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <glad/glad.h>
 #include <sstream>
 #include <vamplogger/logger.h>
 #include "shader.h"
+#include "../debug/glcall.h"
 #include "mesh.h"
 
 
 namespace LearnOpenGL
 {
     Model::Model(const std::string &path)
-    : m_noTextCoordsFound(false), m_noMaterialFound(false)
+    : m_modelsVBO(0), m_noTextCoordsFound(false), m_noMaterialFound(false)
     {
         Assimp::Importer importer;
 
@@ -198,5 +200,41 @@ namespace LearnOpenGL
         m_textureManager.push_back(new_loaded_texture);
 
         return texture;
+    }
+
+
+
+    void Model::SetInstancedDrawCall(const glm::mat4 *models, unsigned int count)
+    {
+        //Create the buffer.
+        if (m_modelsVBO == 0)
+        {
+            //Create a new buffer to store the matrix models.
+            glCALL(glGenBuffers(1, &m_modelsVBO));
+            glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_modelsVBO));
+            glCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * count, models, GL_STREAM_DRAW));
+
+            //Unbind the buffer.
+            glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        }
+        
+        //Update the buffer.
+        else
+        {
+            //Bind the models buffer.
+            glCALL(glBindBuffer(GL_ARRAY_BUFFER, m_modelsVBO));
+
+            //Replace the whole buffer with new data.
+            glCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * count, models));
+
+            //Unbind the buffer.
+            glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+        }
+
+        
+        for (Mesh *mesh : m_meshes)
+        {
+            mesh->setInstancedDrawCall(count, m_modelsVBO);
+        }
     }
 }

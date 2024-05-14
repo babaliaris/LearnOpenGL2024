@@ -11,7 +11,7 @@
 namespace LearnOpenGL
 {
     Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indicies, const std::vector<Texture *> &textures)
-    : m_vao(0), m_vbo(0), m_ebo(0), m_indicesCount(indicies.size())
+    : m_vao(0), m_vbo(0), m_ebo(0), m_instancedCount(0), m_indicesCount(indicies.size()), m_instancedDraw(false)
     {
         //Set up the textures.
         int max_textures = MAX_NUMBER_OF_DIFFUSE_TEXTURES + MAX_NUMBER_OF_SPECULAR_TEXTURES;
@@ -98,13 +98,73 @@ namespace LearnOpenGL
 
         shader->SetUniform("u_material.numOfDiffuse", diffuse_number);
         shader->SetUniform("u_material.numOfSpecular", specular_number);
+        shader->SetUniform("u_instancedDraw", m_instancedDraw ? 1 : 0);
         
+        //Bind the shader and the VAO.
         shader->Bind();
         glCALL(glBindVertexArray(m_vao));
-        glCALL(glDrawElements(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0));
-        glCALL(glBindVertexArray(0));
 
+        //Instanced Draw Call.
+        if (m_instancedDraw)
+        {
+            glDrawElementsInstanced(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0, m_instancedCount);
+        }
+
+        //Regular Draw Call.
+        else
+        {
+            glCALL(glDrawElements(GL_TRIANGLES, m_indicesCount, GL_UNSIGNED_INT, 0));
+        }
+
+        //Unbind Everything.
+        glCALL(glBindVertexArray(0));
         for (Texture *texture : m_textures)
             texture->UnBind();
+    }
+
+
+
+    void Mesh::setInstancedDrawCall(unsigned int count, unsigned int modelsVBO)
+    {
+        //Enable the flag.
+        this->m_instancedDraw  = true;
+        this->m_instancedCount = count;
+
+        //Bind the VAO.
+        glCALL(glBindVertexArray(m_vao));
+
+        //Bind the models VBO.
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, modelsVBO));
+
+        //--------------------------------Store each column in a different attribute--------------------------------//
+        //THE STRIDE MUST BE EQUAL TO THE SIZE OF THE MATRIX sizeof(glm::vec4) * 4 = 16 * 4 = 64 BYTES!!!
+
+        //Column 1
+        glCALL(glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (void *)0));
+        glCALL(glEnableVertexAttribArray(3));
+
+        //Column 2
+        glCALL(glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (void *)(sizeof(glm::vec4) * 1))); // 4 * 1 = 4
+        glCALL(glEnableVertexAttribArray(4));
+
+        //Column 3
+        glCALL(glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (void *)(sizeof(glm::vec4) * 2))); // 4 * 2 = 8
+        glCALL(glEnableVertexAttribArray(5));
+
+        //Column 4
+        glCALL(glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4) * 4, (void *)(sizeof(glm::vec4) * 3))); // 4 * 3 = 12
+        glCALL(glEnableVertexAttribArray(6));
+
+        //--------------------------------Store each column in a different attribute--------------------------------//
+
+        //Enable instance reading.
+        glCALL(glVertexAttribDivisor(3, 1));
+        glCALL(glVertexAttribDivisor(4, 1));
+        glCALL(glVertexAttribDivisor(5, 1));
+        glCALL(glVertexAttribDivisor(6, 1));
+
+        //Unbind the buffers.
+        glCALL(glBindVertexArray(0));
+        glCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
     }
 }

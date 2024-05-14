@@ -38,6 +38,7 @@ namespace LearnOpenGL
         {
             m_planetModel   = new Model("projects/LearnOpenGL/resources/models/planet/planet.obj");
             m_asteroidModel = new Model("projects/LearnOpenGL/resources/models/planet/rock.obj");
+            m_asteroidModel->SetInstancedDrawCall(m_modelMatrices, ASTEROID_AMOUNT);
         }
 
         switch (m_effect)
@@ -74,16 +75,12 @@ namespace LearnOpenGL
             model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
             m_shader->SetUniform("u_model",  model);
             m_shader->SetUniform("u_view",   m_camera->getView());
-            m_shader->SetUniform("u_proj",   glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 100.0f));
+            m_shader->SetUniform("u_proj",   glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 200.0f));
 
             m_planetModel->Draw(m_shader);
             
             
-            for (unsigned int i = 0; i < ASTEROID_AMOUNT; i++)
-            {
-                m_shader->SetUniform("u_model",  m_modelMatrices[i]);
-                m_asteroidModel->Draw(m_shader);
-            }
+            m_asteroidModel->Draw(m_shader);
         }
     }
 
@@ -149,8 +146,8 @@ namespace LearnOpenGL
     void InstancedDraw::prepareInstanceModels()
     {
         srand(glfwGetTime()); // initialize random seed	
-        float radius = 25.0;
-        float offset = 5.5f;
+        float radius = 50.0;
+        float offset = 20.0f;
 
         for (unsigned int i = 0; i < ASTEROID_AMOUNT; i++)
         {

@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <assimp/scene.h>
+#include <glm/glm.hpp>
 #include "texture.h"
 
 namespace LearnOpenGL
@@ -23,9 +24,11 @@ namespace LearnOpenGL
         ~Model();
 
         void Draw(Shader *shader);
+        void SetInstancedDrawCall(const glm::mat4 *models, unsigned int count);
 
 
         private:
+        unsigned int m_modelsVBO;
         bool m_noTextCoordsFound, m_noMaterialFound;
         std::vector<Mesh *> m_meshes;
         std::string m_directory;

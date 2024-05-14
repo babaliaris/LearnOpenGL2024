@@ -25,11 +25,15 @@ namespace LearnOpenGL
         ~Mesh();
 
         void Draw(Shader *shader);
+        void DrawInstanced(Shader *shader);
+
+        void setInstancedDrawCall(unsigned int count, unsigned int modelsVBO);
 
 
         private:
-        unsigned int m_vao, m_vbo, m_ebo;
+        unsigned int m_vao, m_vbo, m_ebo, m_instancedCount;
         int m_indicesCount;
+        bool m_instancedDraw;
         std::vector<Texture *> m_textures;
     };
 }

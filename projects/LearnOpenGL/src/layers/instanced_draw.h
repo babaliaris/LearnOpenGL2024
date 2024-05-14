@@ -1,7 +1,7 @@
 #pragma once
 #include "../core/learnOpenGL.h"
 
-#define ASTEROID_AMOUNT 10000
+#define ASTEROID_AMOUNT 100000
 
 namespace LearnOpenGL
 {
