@@ -47,7 +47,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = TEST_MODEL_LOADING;
+    std::string loadingLayer = GEOMETRY_SHADER;
 
 
 

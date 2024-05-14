@@ -9,12 +9,15 @@ in VS
     vec3 aFragPos;
 } vs_in[];
 
-out vec2 aTexCoord;
-out vec3 aNormal;
-out vec3 aFragPos;
+
+out VS
+{
+    vec2 aTexCoord;
+    vec3 aNormal;
+    vec3 aFragPos;
+} vs_out;
 
 uniform float u_time;
-
 
 vec3 getTriangleNormal()
 {
@@ -34,22 +37,22 @@ void main()
 {
     vec3 normal = getTriangleNormal();
 
-    gl_Position = explodedVertex( gl_in[0].gl_Position, normal );
-    aTexCoord   = vs_in[0].aTexCoord;
-    aNormal     = vs_in[0].aNormal;
-    aFragPos    = vs_in[0].aFragPos;
+    gl_Position         = explodedVertex( gl_in[0].gl_Position, normal );
+    vs_out.aTexCoord    = vs_in[0].aTexCoord;
+    vs_out.aNormal      = vs_in[0].aNormal;
+    vs_out.aFragPos     = vs_in[0].aFragPos;
     EmitVertex();
 
-    gl_Position = explodedVertex( gl_in[1].gl_Position, normal );
-    aTexCoord   = vs_in[1].aTexCoord;
-    aNormal     = vs_in[1].aNormal;
-    aFragPos    = vs_in[1].aFragPos;
+    gl_Position         = explodedVertex( gl_in[1].gl_Position, normal );
+    vs_out.aTexCoord    = vs_in[1].aTexCoord;
+    vs_out.aNormal      = vs_in[1].aNormal;
+    vs_out.aFragPos     = vs_in[1].aFragPos;
     EmitVertex();
 
-    gl_Position = explodedVertex( gl_in[2].gl_Position, normal );
-    aTexCoord   = vs_in[2].aTexCoord;
-    aNormal     = vs_in[2].aNormal;
-    aFragPos    = vs_in[2].aFragPos;
+    gl_Position         = explodedVertex( gl_in[2].gl_Position, normal );
+    vs_out.aTexCoord    = vs_in[2].aTexCoord;
+    vs_out.aNormal      = vs_in[2].aNormal;
+    vs_out.aFragPos     = vs_in[2].aFragPos;
     EmitVertex();
 
     EndPrimitive();
