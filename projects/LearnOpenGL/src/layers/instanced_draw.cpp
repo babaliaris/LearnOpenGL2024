@@ -76,7 +76,7 @@ namespace LearnOpenGL
             model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
             m_shader->SetUniform("u_model",  model);
             m_shader->SetUniform("u_view",   m_camera->getView());
-            m_shader->SetUniform("u_proj",   glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 200.0f));
+            m_shader->SetUniform("u_proj",   glm::perspective(glm::radians(45.0f), (float)app->getWindow()->getWidth() / app->getWindow()->getHeight(), 0.1f, 400.0f));
 
             m_planetModel->Draw(m_shader);
             

@@ -49,6 +49,9 @@ int main(void)
     //Choose example layer to start.
     std::string loadingLayer = INSTANCED_DRAW;
 
+
+
+
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
     if (loadingLayer == COORDINATE_SYSTEMS)

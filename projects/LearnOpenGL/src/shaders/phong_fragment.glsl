@@ -1,9 +1,13 @@
 #version 330 core
 out vec4 aColor;
 
-in vec2 aTexCoord;
-in vec3 aNormal;
-in vec3 aFragPos;
+in VS
+{
+    vec2 aTexCoord;
+    vec3 aNormal;
+    vec3 aFragPos;
+
+} vs_in;
 
 
 struct DirectionalLight
@@ -119,8 +123,8 @@ vec4 phongModel()
     if (u_numberOfPointLights > 0)
     {
         point_attenuated = attenuateLight(u_pointLight.diffuse, u_pointLight.position, u_pointLight.attenuation);
-        point_impacted   = calculateImpactedLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
-        point_specular   = calculateSpecularLight(point_attenuated, u_pointLight.brightness, aFragPos - u_pointLight.position);
+        point_impacted   = calculateImpactedLight(point_attenuated, u_pointLight.brightness, vs_in.aFragPos - u_pointLight.position);
+        point_specular   = calculateSpecularLight(point_attenuated, u_pointLight.brightness, vs_in.aFragPos - u_pointLight.position);
     }
 
 
@@ -128,8 +132,8 @@ vec4 phongModel()
     if (u_numberOfSpotLights > 0)
     {
         spot_light     = attenuateLight(calculateSpotLight(), u_spotLight.position, u_spotLight.attenuation);
-        spot_impacted  = calculateImpactedLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
-        spot_specular  = calculateSpecularLight(spot_light, u_spotLight.brightness, aFragPos - u_spotLight.position);
+        spot_impacted  = calculateImpactedLight(spot_light, u_spotLight.brightness, vs_in.aFragPos - u_spotLight.position);
+        spot_specular  = calculateSpecularLight(spot_light, u_spotLight.brightness, vs_in.aFragPos - u_spotLight.position);
     }
 
     vec4 total_diffuse  = ambient + impacted_directional + point_impacted + spot_impacted;
@@ -138,13 +142,13 @@ vec4 phongModel()
     //Diffuce and Specular maps.
     if (u_material.numOfDiffuse == 1 && u_material.numOfSpecular == 1)
     {
-        return texture(u_material.diffuse0, aTexCoord) * total_diffuse + texture(u_material.specular0, aTexCoord) * total_specular;
+        return texture(u_material.diffuse0, vs_in.aTexCoord) * total_diffuse + texture(u_material.specular0, vs_in.aTexCoord) * total_specular;
     }
 
     //Diffuse only.
     else if (u_material.numOfDiffuse == 1 && u_material.numOfSpecular == 0)
     {
-        return texture(u_material.diffuse0, aTexCoord) * total_diffuse;
+        return texture(u_material.diffuse0, vs_in.aTexCoord) * total_diffuse;
     }
 
     //No textures at all.
@@ -164,7 +168,7 @@ vec4 calculateAmbientLight()
 vec4 calculateImpactedLight(vec3 diffuse, float brightness, vec3 direction)
 {
 
-    float impactedFactor = max( dot(normalize(-direction), normalize(aNormal)), 0.0f);
+    float impactedFactor = max( dot(normalize(-direction), normalize(vs_in.aNormal)), 0.0f);
 
     vec4 impactedLight = vec4(diffuse * brightness * impactedFactor, 1.0f);
 
@@ -175,9 +179,9 @@ vec4 calculateImpactedLight(vec3 diffuse, float brightness, vec3 direction)
 
 vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction)
 {
-    vec3 camDir     = normalize(aFragPos - u_CamPos);
+    vec3 camDir     = normalize(vs_in.aFragPos - u_CamPos);
 
-    vec3 reflected = normalize(reflect(normalize(direction), aNormal));
+    vec3 reflected = normalize(reflect(normalize(direction), vs_in.aNormal));
 
     float specFactor = pow(max(dot(reflected, -camDir), 0.0f), 64.0f);
 
@@ -190,7 +194,7 @@ vec4 calculateSpecularLight(vec3 diffuse, float brightness, vec3 direction)
 
 vec3 attenuateLight(vec3 diffuse, vec3 position, vec3 coefficients)
 {
-    float light_distance    = length(aFragPos - position);
+    float light_distance    = length(vs_in.aFragPos - position);
     float attenuation       = 1 / ( coefficients.x + coefficients.y * light_distance + coefficients.z * pow(light_distance, 2) );
 
     return diffuse * attenuation;
@@ -199,7 +203,7 @@ vec3 attenuateLight(vec3 diffuse, vec3 position, vec3 coefficients)
 
 vec3 calculateSpotLight()
 {
-    vec3 lightDir = normalize(aFragPos - u_spotLight.position);
+    vec3 lightDir = normalize(vs_in.aFragPos - u_spotLight.position);
 
     float theta     = dot(-lightDir, -normalize(u_spotLight.direction));
     float ephilon   = u_spotLight.cutoff - u_spotLight.outer;
