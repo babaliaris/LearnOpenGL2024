@@ -18,6 +18,7 @@
 #include "layers/reflection_refraction.h"
 #include "layers/geometry_shader.h"
 #include "layers/instanced_draw.h"
+#include "layers/antialiasing.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -36,6 +37,7 @@
 #define REFLECTION_REFRACTION "REFLECTION_REFRACTION"
 #define GEOMETRY_SHADER "GEOMETRY_SHADER"
 #define INSTANCED_DRAW "INSTANCED_DRAW"
+#define ANTIALIZING "ANTIALIZING"
 
 
 int main(void)
@@ -47,7 +49,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = INSTANCED_DRAW;
+    std::string loadingLayer = ANTIALIZING;
 
 
 
@@ -153,6 +155,12 @@ int main(void)
     else if (loadingLayer == INSTANCED_DRAW)
     {
         LearnOpenGL::InstancedDraw *new_layer = new LearnOpenGL::InstancedDraw(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == ANTIALIZING)
+    {
+        LearnOpenGL::Antializing *new_layer = new LearnOpenGL::Antializing(app);
         app->appendLayer(new_layer);
     }
 
