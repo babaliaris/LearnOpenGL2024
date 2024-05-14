@@ -5,8 +5,9 @@ namespace LearnOpenGL
 {
 
     CameraFunctionalityLayer::CameraFunctionalityLayer(Application *app)
-    : Layer("CameraFunctionalityLayer", app), m_moveSpeed(10.0f)
+    : Layer("CameraFunctionalityLayer", app), m_moveSpeed(10.0f), m_sprintSpeed(50.0f), m_actualSpeed(0.0f)
     {
+        m_actualSpeed = m_moveSpeed;
     }
 
 
@@ -34,25 +35,34 @@ namespace LearnOpenGL
         
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            m_camera->move( m_camera->getForward(), m_moveSpeed * app->getDeltaTime());
+            m_camera->move( m_camera->getForward(), m_actualSpeed * app->getDeltaTime());
         }
 
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-            m_camera->move( -m_camera->getForward(), m_moveSpeed * app->getDeltaTime());
+            m_camera->move( -m_camera->getForward(), m_actualSpeed * app->getDeltaTime());
         }
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            m_camera->move( -m_camera->getRight(), m_moveSpeed * app->getDeltaTime());
+            m_camera->move( -m_camera->getRight(), m_actualSpeed * app->getDeltaTime());
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            m_camera->move( m_camera->getRight(), m_moveSpeed * app->getDeltaTime());
+            m_camera->move( m_camera->getRight(), m_actualSpeed * app->getDeltaTime());
         }
-        
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        {
+            m_actualSpeed = m_sprintSpeed;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+        {
+            m_actualSpeed = m_moveSpeed;
+        }
     }
 
 }

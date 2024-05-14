@@ -19,7 +19,7 @@ namespace LearnOpenGL
         inline Camera3D *getCamera() const {return m_camera;}
 
         private:
-        float m_moveSpeed;
+        float m_moveSpeed, m_sprintSpeed, m_actualSpeed;
         Camera3D *m_camera;
     };
 }
