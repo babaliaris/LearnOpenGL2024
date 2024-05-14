@@ -2,8 +2,6 @@
 out vec4 aColor;
 
 in vec2 aTexCoord;
-in vec3 aNormal;
-in vec3 aFragPos;
 
 struct Material
 {
@@ -25,5 +23,15 @@ uniform Material u_material;
 
 void main()
 {
-    aColor = texture(u_material.diffuse0, aTexCoord);
+    //Diffuse texture.
+    if (u_material.numOfDiffuse > 0 && u_material.numOfSpecular >= 0)
+    {
+        aColor = texture(u_material.diffuse0, aTexCoord) + texture(u_material.specular0, aTexCoord) * 0.0001;
+    }
+
+    //Debug Color.
+    else
+    {
+        aColor = vec4(0.5, 0.5, 0.5, 1.0);
+    }
 }

@@ -80,7 +80,6 @@ namespace LearnOpenGL
         normal = glm::transpose(glm::inverse(model));
 
         m_shader->SetUniform("u_model", model);
-        m_shader->SetUniform("u_normal", normal);
 
         m_model = new Model("projects/LearnOpenGL/resources/models/backpack/backpack.obj");
     }
