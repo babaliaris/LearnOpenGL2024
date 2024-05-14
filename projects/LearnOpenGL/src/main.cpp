@@ -17,6 +17,7 @@
 #include "layers/skybox.h"
 #include "layers/reflection_refraction.h"
 #include "layers/geometry_shader.h"
+#include "layers/instanced_draw.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -34,6 +35,7 @@
 #define SKYBOX "SKYBOX"
 #define REFLECTION_REFRACTION "REFLECTION_REFRACTION"
 #define GEOMETRY_SHADER "GEOMETRY_SHADER"
+#define INSTANCED_DRAW "INSTANCED_DRAW"
 
 
 int main(void)
@@ -45,7 +47,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = GEOMETRY_SHADER;
+    std::string loadingLayer = INSTANCED_DRAW;
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
 
@@ -142,6 +144,12 @@ int main(void)
     else if (loadingLayer == GEOMETRY_SHADER)
     {
         LearnOpenGL::GeometryShader *new_layer = new LearnOpenGL::GeometryShader(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == INSTANCED_DRAW)
+    {
+        LearnOpenGL::InstancedDraw *new_layer = new LearnOpenGL::InstancedDraw(app);
         app->appendLayer(new_layer);
     }
 
