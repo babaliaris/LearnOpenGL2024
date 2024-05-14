@@ -48,7 +48,7 @@ namespace LearnOpenGL
 
             case GeometryShaderEffectE::EXPLOSION:
                 vertex_filepath     = "projects/LearnOpenGL/src/shaders/phong_vertex.glsl";
-                geometry_filepath   = "projects/LearnOpenGL/src/shaders/geometry_shader/geometry_points.glsl";
+                geometry_filepath   = "projects/LearnOpenGL/src/shaders/geometry_shader/geometry_explotion.glsl";
                 fragment_filepath   = "projects/LearnOpenGL/src/shaders/phong_fragment.glsl";
                 break;
             
@@ -88,6 +88,9 @@ namespace LearnOpenGL
             m_shader->SetUniform("u_numberOfDirectionalLights", 0);
             m_shader->SetUniform("u_numberOfPointLights", 0);
             m_shader->SetUniform("u_numberOfSpotLights", 0);
+
+            m_shader->SetUniform("u_time", glm::radians(90.0f));
+
             m_model->Draw(m_shader);
         }
     }

@@ -3,9 +3,13 @@ layout(location=0) in vec3 m_Pos;
 layout(location=1) in vec3 m_Normal;
 layout(location=2) in vec2 m_TexCoord;
 
-out vec2 aTexCoord;
-out vec3 aNormal;
-out vec3 aFragPos;
+out VS
+{
+    vec2 aTexCoord;
+    vec3 aNormal;
+    vec3 aFragPos;
+
+} vs_out;
 
 uniform mat4 u_model;
 uniform mat4 u_view;
@@ -16,7 +20,7 @@ void main()
 {
     gl_Position = u_proj * u_view * u_model * vec4(m_Pos, 1.0f);
 
-    aTexCoord   = m_TexCoord;
-    aNormal     = mat3(u_normal) * m_Normal;
-    aFragPos    = (u_model * vec4(m_Pos, 1.0f)).xyz;
+    vs_out.aTexCoord   = m_TexCoord;
+    vs_out.aNormal     = mat3(u_normal) * m_Normal;
+    vs_out.aFragPos    = (u_model * vec4(m_Pos, 1.0f)).xyz;
 }
