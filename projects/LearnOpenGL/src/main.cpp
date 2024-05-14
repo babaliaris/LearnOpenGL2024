@@ -19,6 +19,7 @@
 #include "layers/geometry_shader.h"
 #include "layers/instanced_draw.h"
 #include "layers/antialiasing.h"
+#include "layers/blinn_phong.h"
 
 #define COORDINATE_SYSTEMS "COORDINATE_SYSTEMS"
 #define MORE_3D "MORE_3D"
@@ -38,6 +39,7 @@
 #define GEOMETRY_SHADER "GEOMETRY_SHADER"
 #define INSTANCED_DRAW "INSTANCED_DRAW"
 #define ANTIALIZING "ANTIALIZING"
+#define BLINN_PHONG "BLINN_PHONG"
 
 
 int main(void)
@@ -50,9 +52,7 @@ int main(void)
     app->appendLayer(camFunctionality);
 
     //Choose example layer to start.
-    std::string loadingLayer = ANTIALIZING;
-
-
+    std::string loadingLayer = BLINN_PHONG;
 
 
     VAMP_INFO( "Loading: %s", loadingLayer.c_str() );
@@ -162,6 +162,12 @@ int main(void)
     else if (loadingLayer == ANTIALIZING)
     {
         LearnOpenGL::Antializing *new_layer = new LearnOpenGL::Antializing(app);
+        app->appendLayer(new_layer);
+    }
+
+    else if (loadingLayer == BLINN_PHONG)
+    {
+        LearnOpenGL::BlinnPhong *new_layer = new LearnOpenGL::BlinnPhong(app);
         app->appendLayer(new_layer);
     }
 
