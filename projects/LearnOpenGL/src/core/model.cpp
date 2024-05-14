@@ -56,6 +56,9 @@ namespace LearnOpenGL
         {
             delete mesh;
         }
+
+        //Delete the models VBO.
+        glCALL(glDeleteBuffers(1, &m_modelsVBO));
     }
 
 
