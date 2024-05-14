@@ -13,13 +13,13 @@
 
 namespace LearnOpenGL
 {
-    Application::Application(const std::string &title, int width, int height)
+    Application::Application(const std::string &title, int width, int height, int samples)
         : m_deltaTime(0.0f)
     {
         VAMP_GLOBAL_ENGINE_LOGGER = VampNewLogger("Engine");
         VAMP_GLOBAL_CLIENT_LOGGER = VampNewLogger("Client");
 
-        m_window = new Window(title, width, height);
+        m_window = new Window(title, width, height, samples);
 
         glCALL(glEnable(GL_DEPTH_TEST));
         glCALL(glEnable(GL_STENCIL_TEST));

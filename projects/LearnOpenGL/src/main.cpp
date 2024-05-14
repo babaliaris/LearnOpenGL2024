@@ -42,7 +42,8 @@
 
 int main(void)
 {
-    LearnOpenGL::Application *app = new LearnOpenGL::Application("LearnOpenGL", 800, 600);
+    int msaa_samples = 8;
+    LearnOpenGL::Application *app = new LearnOpenGL::Application("LearnOpenGL", 800, 600, msaa_samples);
 
     //Create a camera and append it to the layers.
     LearnOpenGL::CameraFunctionalityLayer *camFunctionality = new LearnOpenGL::CameraFunctionalityLayer(app);

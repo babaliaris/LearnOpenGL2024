@@ -5,14 +5,17 @@
 
 struct GLFWwindow;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 namespace LearnOpenGL
 {
     class Window
     {
         friend class Application;
+        friend void ::framebuffer_size_callback(GLFWwindow* window, int width, int height);
         
         public:
-        Window(const std::string &title, int width, int height);
+        Window(const std::string &title, int width, int height, int samples);
         ~Window();
 
         void update();

@@ -5,12 +5,9 @@
 #include <vamplogger/logger.h>
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
-
 namespace LearnOpenGL
 {
-    Window::Window(const std::string &title, int width, int height)
+    Window::Window(const std::string &title, int width, int height, int samples)
     : m_title(title), m_width(width), m_height(height), m_window(NULL)
     {
         /* Initialize the library */
@@ -25,6 +22,7 @@ namespace LearnOpenGL
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_SAMPLES, samples);
 
         /* Create a windowed mode window and its OpenGL context */
         VAMP_INFO("[GLFW] Creating the window...");
@@ -54,6 +52,14 @@ namespace LearnOpenGL
 
 
         glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+
+        glfwSetWindowUserPointer(m_window, this);
+
+        //Enable MSAA.
+        if (samples > 0)
+        {
+            glCALL(glEnable(GL_MULTISAMPLE));
+        }
     }
 
     Window::~Window()
@@ -83,5 +89,10 @@ namespace LearnOpenGL
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+    LearnOpenGL::Window *m_window = (LearnOpenGL::Window *)glfwGetWindowUserPointer(window);
+
+    m_window->m_width = width;
+    m_window->m_height = height;
+
     glCALL(glViewport(0, 0, width, height));
 }

@@ -39,6 +39,7 @@ namespace LearnOpenGL
 
     void Antializing::onStart(Application *app)
     {
+
         m_camera = ((CameraFunctionalityLayer *)this->findLayer("CameraFunctionalityLayer"))->getCamera();
 
         this->PrepareCubeData();

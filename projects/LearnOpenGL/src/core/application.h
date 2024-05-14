@@ -12,7 +12,7 @@ namespace LearnOpenGL
         friend class Layer;
         
         public:
-        Application(const std::string &title, int width, int height);
+        Application(const std::string &title, int width, int height, int samples = 0);
         ~Application();
 
         void Run();
