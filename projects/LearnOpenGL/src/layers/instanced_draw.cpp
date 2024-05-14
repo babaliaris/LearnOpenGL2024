@@ -8,6 +8,7 @@ namespace LearnOpenGL
     m_effect(InstancedDraw::ASTEROID), m_planetModel(nullptr),
     m_asteroidModel(nullptr), m_instancedVBO(0)
     {
+        VAMP_INFO("[DrawInstanced] Number Of Instances: %d", ASTEROID_AMOUNT);
     }
 
 
@@ -146,8 +147,8 @@ namespace LearnOpenGL
     void InstancedDraw::prepareInstanceModels()
     {
         srand(glfwGetTime()); // initialize random seed	
-        float radius = 50.0;
-        float offset = 20.0f;
+        float radius = 80.0;
+        float offset = 40.0f;
 
         for (unsigned int i = 0; i < ASTEROID_AMOUNT; i++)
         {
